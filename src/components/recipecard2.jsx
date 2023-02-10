@@ -1,11 +1,11 @@
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-function RecipeCard2() {
+function RecipeCard2({ cwidth = "100%" }) {
   return (
     <View
       style={{
-        width: "100%",
+        width: cwidth,
         height: 106,
         paddingHorizontal: 20,
         borderRadius: 15,

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { View } from "react-native";
-import { ShowToast } from "../../utils/help";
+import { View, Image } from "react-native";
+import { ShowToast, showLoadingLottie } from "../../utils/help";
 // import { firebase } from "../../services/firebaseConfig";
 import { InputBox } from "../../components/input";
 import { TextButton } from "../../components/textbutton";
@@ -8,6 +8,7 @@ import { BButton } from "../../components/bbutton";
 // import { HeaderLogin } from "../../components/headerlogin";
 import { Ionicons } from "@expo/vector-icons";
 import { stylesignin } from "./signinStyle";
+import LottieView from "lottie-react-native";
 // import {
 //   getUserId,
 //   storeUserSession,
@@ -20,6 +21,7 @@ function SignIN({ navigation }) {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   //   const loggedIn = getUserLoggedInStatus();
   //   const UID = getUserId();
@@ -31,6 +33,13 @@ function SignIN({ navigation }) {
       setShowPass(false);
     } else if (showPass === false) {
       setShowPass(true);
+    }
+  };
+  const toggleShowLoading = () => {
+    if (showLoading === true) {
+      setShowLoading(false);
+    } else if (showLoading === false) {
+      setShowLoading(true);
     }
   };
 
@@ -67,33 +76,44 @@ function SignIN({ navigation }) {
       <View style={stylesignin.formCon}>
         {/* <HeaderLogin title={"Login"} /> */}
 
-        <Ionicons
-          name="person-circle"
-          size={150}
-          color={"white"}
+        <Image
+          source={
+            showPassword
+              ? require("../../../assets/maria.jpg")
+              : require("../../../assets/person.png")
+          }
           style={{
             alignSelf: "center",
+            borderRadius: 100,
+            width: 150,
+            height: 150,
+            marginBottom: 20,
+            borderColor: "white",
+            borderWidth: 5,
           }}
           onPress={() => {
             // alert("camera click");
             // ShowToast("success", "you are the authentic useer CONGO", "top");
           }}
         />
-        <ShowToast />
         <InputBox
           placeholder={"Email"}
           iconName={"mail-outline"}
           showIcon={true}
           onTextChange={setEmail}
         />
-        <InputBox
-          placeholder={"Password"}
-          isSecure={!showPass}
-          iconName={showPass === false ? "eye-outline" : "eye-off-outline"}
-          showIcon={true}
-          iconPress={handleShowPass}
-          onTextChange={setPassword}
-        />
+        {showPassword ? (
+          <InputBox
+            placeholder={"Password"}
+            isSecure={!showPass}
+            iconName={showPass === false ? "eye-outline" : "eye-off-outline"}
+            showIcon={true}
+            iconPress={handleShowPass}
+            onTextChange={setPassword}
+          />
+        ) : (
+          <View />
+        )}
         <View style={stylesignin.textbtnCon}>
           {/* <TextButton
             title="Forgot your password?"
@@ -104,11 +124,15 @@ function SignIN({ navigation }) {
         </View>
         <BButton
           bgColor="#584153"
-          title="Sign IN"
-          cwidth={"95%"}
+          title={showPassword ? "Sign IN" : "Enter Password"}
+          cwidth={"100%"}
           borColor={"lightgreen"}
           onPressChange={() => {
-            navigation.navigate("Home");
+            if (showPassword == true) {
+              navigation.navigate("Home");
+            }
+
+            setShowPassword(true);
           }}
         />
         <View style={stylesignin.gotoSignupStyle}>
@@ -120,6 +144,13 @@ function SignIN({ navigation }) {
           />
         </View>
       </View>
+      {showLoading && (
+        <LottieView
+          source={require("../../../assets/animations/recipes-book.json")}
+          autoPlay
+          loop
+        />
+      )}
     </View>
   );
 }

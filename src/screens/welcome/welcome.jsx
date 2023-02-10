@@ -4,14 +4,14 @@ import { styles } from "./welcomeStyle";
 
 function Welcome({ navigation }) {
   return (
-    <View>
+    <View style={{ backgroundColor: "black", flex: 1 }}>
       <ImageBackground
-        style={{ width: "100%", height: "100%" }}
+        style={{ width: "100%", height: "95%" }}
         source={require("../../../assets/welcome.jpg")}
       >
         <View
           style={{
-            flex: 0.7,
+            flex: 0.8,
             justifyContent: "flex-end",
             paddingHorizontal: 20,
           }}
@@ -25,10 +25,12 @@ function Welcome({ navigation }) {
         </View>
         <View
           style={{
-            flex: 0.2,
             justifyContent: "space-around",
             paddingHorizontal: 20,
             alignContent: "space-between",
+            position: "absolute",
+            bottom: 10,
+            width: "100%",
           }}
         >
           <BButton

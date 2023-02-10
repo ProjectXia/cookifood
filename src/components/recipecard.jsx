@@ -5,10 +5,10 @@ function RecipeCard() {
   return (
     <View
       style={{
-        width: "60%",
+        width: 200,
         marginVertical: 10,
         marginHorizontal: 5,
-        height: "60%",
+        height: 315,
       }}
     >
       <ImageBackground

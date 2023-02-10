@@ -66,7 +66,7 @@ function RecipesDetail() {
               borderRadius: 30,
               position: "absolute",
               top: 15,
-              left: 40,
+              left: 30,
               justifyContent: "center",
               alignItems: "center",
               alignContent: "center",
@@ -78,7 +78,13 @@ function RecipesDetail() {
             />
             {/* <Ionicons name="person-circle-outline" size={60} color={"white"} /> */}
           </View>
-          <View style={{ position: "absolute", top: 15, left: 115 }}>
+          <View
+            style={{
+              position: "absolute",
+              top: 15,
+              left: 105,
+            }}
+          >
             <Text style={{ color: "gray", fontSize: 16, fontWeight: "400" }}>
               Recipe by:
             </Text>
@@ -89,7 +95,7 @@ function RecipesDetail() {
                 fontWeight: "bold",
               }}
             >
-              Fareeha ZiA
+              Maria
             </Text>
           </View>
           <Ionicons
@@ -238,17 +244,17 @@ function RecipesDetail() {
           />
           <IngredientCard
             iconName={require("../../../assets/Ingredients/tomato.png")}
-            IngredientName="Fresh Shrimp"
+            IngredientName="Campari tomatoes"
             IngredientMsr={"100 g"}
           />
           <IngredientCard
             iconName={require("../../../assets/Ingredients/salt-shaker.png")}
-            IngredientName="Fresh Shrimp"
+            IngredientName="Salt"
             IngredientMsr={"3/4 tbsp"}
           />
           <IngredientCard
             iconName={require("../../../assets/Ingredients/pepper.png")}
-            IngredientName="Fresh Shrimp"
+            IngredientName="Black Pepper"
             IngredientMsr={"1/4 tbsp"}
           />
         </ScrollView>

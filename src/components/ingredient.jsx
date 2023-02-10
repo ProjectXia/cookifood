@@ -9,16 +9,17 @@ function IngredientCard({ iconName, IngredientName, IngredientMsr }) {
         flexDirection: "row",
         alignContent: "center",
         justifyContent: "space-between",
-        marginVertical: 10,
+        marginVertical: 8,
       }}
     >
       <View
         style={{
-          width: 40,
-          height: 40,
-          backgroundColor: "gray",
+          width: 45,
+          height: 45,
+          backgroundColor: "#E9E8E8",
           justifyContent: "center",
           alignItems: "center",
+          borderRadius: 5,
         }}
       >
         <Image source={iconName} style={{ width: 30, height: 30 }} />

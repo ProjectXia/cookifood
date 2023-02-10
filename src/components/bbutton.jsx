@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 15,
     marginVertical: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 0,
     alignItems: "center",
   },
   btnTitle: {

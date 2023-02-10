@@ -5,7 +5,8 @@ const stylehome = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
     paddingVertical: 15,
-    backgroundColor: "#DFE8CC",
+    backgroundColor: "#DFE8CC", // #DFE8CC
+    marginBottom: 63,
   },
   heading: { color: "#584153", fontSize: 24, fontWeight: "600" },
   subheading: { color: "gray", fontSize: 16, fontWeight: "400" },
