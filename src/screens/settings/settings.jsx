@@ -1,11 +1,53 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { stylessetting } from "./settingStyle";
+import { Ionicons } from "@expo/vector-icons";
 
 function Settings() {
   return (
     <View style={stylessetting.mainview}>
-      <Text>Settings</Text>
+      <View
+        style={{
+          height: 55,
+          width: "100%",
+          backgroundColor: "#ABC270",
+          borderRadius: 15,
+          marginBottom: 5,
+          padding: 10,
+          alignItems: "center",
+          flexDirection: "row",
+          position: "absolute",
+          top: 15,
+        }}
+      >
+        <Ionicons name="settings-outline" size={30} color={"gray"} />
+        <Text style={{ fontSize: 20 }}>Settings</Text>
+      </View>
+      <Text>Profile | Order Status | About | logout</Text>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity style={stylessetting.card}>
+          <Ionicons name="card-outline" size={80} color={"gray"} />
+          <Text style={stylessetting.cardText}>Profile</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={stylessetting.card}>
+          <Ionicons name="list-circle-outline" size={80} color={"gray"} />
+          <Text style={stylessetting.cardText}>My Orders</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity style={stylessetting.card}>
+          <Ionicons
+            name="information-circle-outline"
+            size={80}
+            color={"gray"}
+          />
+          <Text style={stylessetting.cardText}>About Us</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={stylessetting.card}>
+          <Ionicons name="log-out-outline" size={80} color={"gray"} />
+          <Text style={stylessetting.cardText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }

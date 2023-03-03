@@ -36,6 +36,7 @@ function Search() {
             flex: 1,
             paddingHorizontal: 5,
             paddingVertical: 15,
+            marginBottom: 50,
           }}
         >
           <RecipeCard2 />

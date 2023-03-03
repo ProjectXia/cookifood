@@ -14,6 +14,7 @@ import { Search } from "../screens/search/search";
 import { Bookmark } from "../screens/bookmark/bookmark";
 import { Settings } from "../screens/settings/settings";
 import { RecipesDetail } from "../screens/recipesDetail/recipesdetail";
+import { ShoppingCart } from "../screens/cart/cart";
 
 // const bottomNav = () => {
 //   <NavigationContainer>
@@ -85,7 +86,19 @@ function AppNav() {
           }}
         />
         <Tab.Screen
-          name="settings"
+          name="Shopping Cart"
+          component={ShoppingCart}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <TabIcon
+                focused={focused}
+                icon={focused ? "cart" : "cart-outline"}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Settings"
           component={Settings}
           options={{
             tabBarIcon: ({ focused }) => (

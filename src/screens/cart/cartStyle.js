@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-const stylessetting = StyleSheet.create({
+const stylescart = StyleSheet.create({
   mainview: {
     flex: 1,
     paddingHorizontal: 5,
@@ -17,18 +17,6 @@ const stylessetting = StyleSheet.create({
     padding: 0,
   },
   subheading: { color: "gray", fontSize: 16, fontWeight: "400" },
-  card: {
-    height: 170,
-    width: 170,
-    backgroundColor: "lightblue",
-    margin: 10,
-    borderRadius: 20,
-    borderColor: "green",
-    borderWidth: 2,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  cardText: { fontSize: 16, fontWeight: "400" },
 });
 
-export { stylessetting };
+export { stylescart };

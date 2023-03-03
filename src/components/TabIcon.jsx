@@ -9,7 +9,7 @@ function TabIcon({ icon, focused }) {
         alignItems: "center",
         justifyContent: "center",
         height: 75,
-        width: 80,
+        width: 75,
       }}
     >
       <Ionicons
