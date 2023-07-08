@@ -3,7 +3,7 @@ import { TouchableOpacity, StyleSheet, Text } from "react-native";
 
 function BButton({
   title = "title",
-  bgColor = "green",
+  bgColor = "transparent",
   onPressChange,
   cmargintop = 0,
   cwidth,
@@ -19,7 +19,7 @@ function BButton({
           marginTop: cmargintop,
           width: cwidth,
           borderColor: borColor,
-          borderWidth: 1,
+          borderWidth: 3,
         },
       ]}
     >

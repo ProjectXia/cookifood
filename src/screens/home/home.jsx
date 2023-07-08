@@ -15,7 +15,7 @@ function Home({ navigation }) {
               What you want to cook today?
             </Text>
           </View>
-          <View
+          {/* <View
             style={{
               flexDirection: "column",
               justifyContent: "center",
@@ -34,7 +34,7 @@ function Home({ navigation }) {
             >
               <Text>@</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
         </View>
         <View style={{ marginVertical: 10 }}>
           <InputBox

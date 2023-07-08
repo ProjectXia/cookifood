@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     lineHeight: 40,
   },
-  textDetail: { color: "gray", fontSize: 18, fontWeight: "400" },
+  textDetail: { color: "lightblue", fontSize: 18, fontWeight: "400" },
 });
 
 export { styles };

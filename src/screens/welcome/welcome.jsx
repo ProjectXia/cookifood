@@ -6,7 +6,7 @@ function Welcome({ navigation }) {
   return (
     <View style={{ backgroundColor: "black", flex: 1 }}>
       <ImageBackground
-        style={{ width: "100%", height: "95%" }}
+        style={{ width: "100%", height: "100%" }}
         source={require("../../../assets/welcome.jpg")}
       >
         <View
@@ -34,16 +34,16 @@ function Welcome({ navigation }) {
           }}
         >
           <BButton
-            bgColor="#584153"
-            borColor={"lightgreen"}
+            // bgColor="#584153"
+            borColor={"#584153"}
             title={"SIGN IN"}
             onPressChange={() => {
               navigation.navigate("Signin");
             }}
           />
           <BButton
-            bgColor="#1A120B"
-            borColor={"lightgreen"}
+            // bgColor="#1A120B"
+            borColor={"green"}
             title={"SIGN UP"}
             onPressChange={() => {
               navigation.navigate("Signup");
