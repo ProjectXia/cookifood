@@ -1,11 +1,13 @@
+import { useState, useEffect } from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { firebase } from "../services/firebaseConfig";
 
-function RecipeCard2({ cwidth = "100%" }) {
+function RecipeCard2({ cwidth = "100%", title, imgurl, descrp }) {
   return (
     <View
       style={{
-        width: cwidth,
+        width: 360,
         height: 106,
         paddingHorizontal: 20,
         borderRadius: 15,
@@ -17,11 +19,11 @@ function RecipeCard2({ cwidth = "100%" }) {
     >
       <TouchableOpacity
         onPress={() => {
-          alert("img click");
+          alert(title + " -> img click");
         }}
       >
         <ImageBackground
-          source={require("../../assets/welcome.jpg")}
+          source={{ uri: imgurl }}
           style={{
             height: 100,
             width: 100,
@@ -39,20 +41,20 @@ function RecipeCard2({ cwidth = "100%" }) {
           <TouchableOpacity
             style={{
               flex: 1,
-              marginTop: "2%",
+              marginTop: "1.2%",
               position: "absolute",
               paddingHorizontal: 1,
               justifyContent: "space-evenly",
               flexDirection: "column",
               borderRadius: 15,
-              marginLeft: "25%",
+              marginLeft: "30%",
             }}
           >
             <View
               style={{
                 flexDirection: "column",
-                width: "73%",
-                height: 73,
+                width: "100%",
+                height: 53,
                 justifyContent: "flex-start",
               }}
             >
@@ -64,52 +66,28 @@ function RecipeCard2({ cwidth = "100%" }) {
                   paddingHorizontal: 5,
                   alignSelf: "flex-start",
                   flexWrap: "wrap",
-                  width: "70%",
+                  width: "100%",
                 }}
               >
-                Spaghetti adaaff dfdsf asfsfasgsd asdadad adad
+                {title}
               </Text>
             </View>
           </TouchableOpacity>
-          <View
-            style={{
-              flexDirection: "column",
-              width: 20,
-              height: 60,
-              justifyContent: "flex-end",
-              alignItems: "center",
-              backgroundColor: "#ABC270",
-              position: "absolute",
-              marginLeft: "85%",
-              borderBottomLeftRadius: 15,
-              borderBottomRightRadius: 15,
-              paddingBottom: 10,
-              elevation: 2,
-            }}
-          >
-            <Ionicons
-              name="bookmark-outline"
-              size={35}
-              color={"gray"}
-              onPress={() => {
-                alert("book mark click");
-              }}
-            />
-          </View>
         </View>
         <View>
           <Text
             style={{
               fontWeight: "500",
-              fontSize: 16,
-              color: "white",
+              fontSize: 12,
+              color: "gray",
               alignItems: "flex-end",
-              marginTop: 80,
-              marginLeft: 100,
+              marginTop: 45,
+              marginLeft: 90,
               position: "absolute",
+              flexWrap: "wrap",
             }}
           >
-            30 mins | 1 Serving
+            {descrp}
           </Text>
         </View>
       </View>

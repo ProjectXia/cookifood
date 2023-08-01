@@ -1,8 +1,26 @@
+import { useEffect } from "react";
 import { View, Text, ImageBackground, Button } from "react-native";
 import { BButton } from "../../components/bbutton";
 import { styles } from "./welcomeStyle";
+import { getUserLoggedInStatus } from "../../services/storageService";
+import { firebase } from "../../services/firebaseConfig";
 
 function Welcome({ navigation }) {
+  useEffect(() => {
+    setTimeout(() => {
+      getUserLoggedInStatus()
+        .then((response) => {
+          if (response === "true") {
+            navigation.navigate("Home");
+          } else {
+            navigation.navigate("Signin");
+          }
+        })
+        .catch((error) => {
+          ShowToast("error", error.message);
+        });
+    }, 3000);
+  }, []);
   return (
     <View style={{ backgroundColor: "black", flex: 1 }}>
       <ImageBackground
@@ -36,17 +54,9 @@ function Welcome({ navigation }) {
           <BButton
             // bgColor="#584153"
             borColor={"#584153"}
-            title={"SIGN IN"}
+            title={"Get Started !"}
             onPressChange={() => {
               navigation.navigate("Signin");
-            }}
-          />
-          <BButton
-            // bgColor="#1A120B"
-            borColor={"green"}
-            title={"SIGN UP"}
-            onPressChange={() => {
-              navigation.navigate("Signup");
             }}
           />
         </View>

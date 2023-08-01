@@ -13,6 +13,7 @@ function InputBox({
   onBlur,
   value,
   iconSize = 20,
+  keyboard,
 }) {
   return (
     <View style={styles.inputStyle}>
@@ -23,6 +24,7 @@ function InputBox({
         style={styles.input}
         onBlur={onBlur}
         value={value}
+        keyboardType={keyboard}
       />
       {showIcon === true ? (
         <Ionicons

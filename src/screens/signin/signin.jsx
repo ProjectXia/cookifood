@@ -1,19 +1,19 @@
 import { useState } from "react";
-import { View, Image } from "react-native";
+import { View, Image, ToastAndroid } from "react-native";
 import { ShowToast, showLoadingLottie } from "../../utils/help";
-// import { firebase } from "../../services/firebaseConfig";
+import { firebase } from "../../services/firebaseConfig";
 import { InputBox } from "../../components/input";
 import { TextButton } from "../../components/textbutton";
 import { BButton } from "../../components/bbutton";
-// import { HeaderLogin } from "../../components/headerlogin";
+import { HeaderLogin } from "../../components/headinglogin";
 import { Ionicons } from "@expo/vector-icons";
 import { stylesignin } from "./signinStyle";
 import LottieView from "lottie-react-native";
-// import {
-//   getUserId,
-//   storeUserSession,
-//   getUserLoggedInStatus,
-// } from "../../services/storageService";
+import {
+  getUserId,
+  storeUserSession,
+  getUserLoggedInStatus,
+} from "../../services/storageService";
 // import LottieView from "lottie-react-native";
 
 function SignIN({ navigation }) {
@@ -23,10 +23,10 @@ function SignIN({ navigation }) {
   const [showLoading, setShowLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  //   const loggedIn = getUserLoggedInStatus();
-  //   const UID = getUserId();
-  //   console.log("my_uid", UID);
-  //   console.log("user_logged", loggedIn);
+  const loggedIn = getUserLoggedInStatus();
+  const UID = getUserId();
+  console.log("my_uid", UID);
+  console.log("user_logged", loggedIn);
 
   const handleShowPass = () => {
     if (showPass === true) {
@@ -35,36 +35,38 @@ function SignIN({ navigation }) {
       setShowPass(true);
     }
   };
-  const toggleShowLoading = () => {
-    if (showLoading === true) {
-      setShowLoading(false);
-    } else if (showLoading === false) {
-      setShowLoading(true);
-    }
+
+  const onSignin = () => {
+    setShowLoading(true);
+
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((authResponse) => {
+        setShowLoading(false);
+
+        const userUid = authResponse.user.uid;
+
+        storeUserSession(userUid, "true", email);
+
+        navigation.replace("Home");
+        ToastAndroid.showWithGravity(
+          "you are the authentic user",
+          ToastAndroid.SHORT,
+          ToastAndroid.TOP
+        );
+        //  now we need a session of user and also take him to goToHome()
+      })
+      .catch((authError) => {
+        setShowLoading(false);
+        ToastAndroid.showWithGravity(
+          authError.message,
+          ToastAndroid.LONG,
+          ToastAndroid.TOP
+        );
+        ShowToast("error", authError.message, "top");
+      });
   };
-
-  //   const onSignin = () => {
-  //     setShowLoading(true);
-
-  //     firebase
-  //       .auth()
-  //       .signInWithEmailAndPassword(email, password)
-  //       .then((authResponse) => {
-  //         setShowLoading(false);
-
-  //         const userUid = authResponse.user.uid;
-
-  //         storeUserSession(userUid, "true", email);
-
-  //         navigation.replace("Dashboard");
-  //         ShowToast("success", "you are the authentic useer CONGO", "top");
-  //         //  now we need a session of user and also take him to goToHome()
-  //       })
-  //       .catch((authError) => {
-  //         setShowLoading(false);
-  //         ShowToast("error", authError.message, "top");
-  //       });
-  //   };
 
   return (
     <View
@@ -74,9 +76,9 @@ function SignIN({ navigation }) {
       }}
     >
       <View style={stylesignin.formCon}>
-        {/* <HeaderLogin title={"Login"} /> */}
+        <HeaderLogin title={"Login"} />
 
-        <Image
+        {/* <Image
           source={
             showPassword
               ? require("../../../assets/maria.jpg")
@@ -95,25 +97,25 @@ function SignIN({ navigation }) {
             // alert("camera click");
             // ShowToast("success", "you are the authentic useer CONGO", "top");
           }}
-        />
+        /> */}
         <InputBox
           placeholder={"Email"}
           iconName={"mail-outline"}
           showIcon={true}
           onTextChange={setEmail}
+          keyboard={"email"}
         />
-        {showPassword ? (
-          <InputBox
-            placeholder={"Password"}
-            isSecure={!showPass}
-            iconName={showPass === false ? "eye-outline" : "eye-off-outline"}
-            showIcon={true}
-            iconPress={handleShowPass}
-            onTextChange={setPassword}
-          />
-        ) : (
-          <View />
-        )}
+
+        <InputBox
+          placeholder={"Password"}
+          isSecure={!showPass}
+          iconName={showPass === false ? "eye-outline" : "eye-off-outline"}
+          showIcon={true}
+          iconPress={handleShowPass}
+          onTextChange={setPassword}
+          keyboard={"password"}
+        />
+
         <View style={stylesignin.textbtnCon}>
           {/* <TextButton
             title="Forgot your password?"
@@ -124,17 +126,21 @@ function SignIN({ navigation }) {
         </View>
         <BButton
           bgColor="#584153"
-          title={showPassword ? "Sign IN" : "Enter Password"}
+          title={"Sign IN"}
           cwidth={"100%"}
           borColor={"lightgreen"}
           onPressChange={() => {
-            if (showPassword == true) {
-              navigation.navigate("Home");
-            }
-
-            setShowPassword(true);
+            onSignin();
           }}
         />
+        {/* <BButton
+          // bgColor="#1A120B"
+          borColor={"green"}
+          title={"SIGN UP"}
+          onPressChange={() => {
+            navigation.navigate("Signup");
+          }}
+        /> */}
         <View style={stylesignin.gotoSignupStyle}>
           <TextButton
             title="Don't have an account?"

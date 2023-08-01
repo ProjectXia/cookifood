@@ -7,6 +7,7 @@ const stylesearch = StyleSheet.create({
     paddingVertical: 15,
     backgroundColor: "#DFE8CC",
     // backgroundColor: "red",
+    marginBottom: 60,
   },
   searchView: {},
   heading: {

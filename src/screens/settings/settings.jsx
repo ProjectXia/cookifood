@@ -2,8 +2,14 @@ import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { stylessetting } from "./settingStyle";
 import { Ionicons } from "@expo/vector-icons";
+import { clearUserSession } from "../../services/storageService";
 
-function Settings() {
+function Settings({ navigation }) {
+  const signOutME = () => {
+    clearUserSession("", "false");
+    navigation.replace("Welcome");
+  };
+
   return (
     <View style={stylessetting.mainview}>
       <View
@@ -43,7 +49,7 @@ function Settings() {
           />
           <Text style={stylessetting.cardText}>About Us</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={stylessetting.card}>
+        <TouchableOpacity style={stylessetting.card} onPress={signOutME}>
           <Ionicons name="log-out-outline" size={80} color={"gray"} />
           <Text style={stylessetting.cardText}>Logout</Text>
         </TouchableOpacity>

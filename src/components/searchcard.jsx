@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../services/firebaseConfig";
 
-function BookMarkCard({ title, mint, serving, img, recipeId }) {
+function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
   const [bookmark, setBookmark] = useState(false);
   const [bookmarkId, setBookmarkId] = useState("");
   const [bookmarkupdate, setBookmarkupdate] = useState(false);
@@ -17,10 +17,8 @@ function BookMarkCard({ title, mint, serving, img, recipeId }) {
       .then((response) => {
         //setMybookmarkId(response.docs);
         response.forEach((doc) => {
-          if (doc.data().isbookmark == true) {
-            setBookmark(doc.data().isbookmark);
-            setBookmarkId(doc.id);
-          }
+          setBookmark(doc.data().isbookmark);
+          setBookmarkId(doc.id);
         });
       })
       .catch((error) => {
@@ -186,4 +184,4 @@ function BookMarkCard({ title, mint, serving, img, recipeId }) {
   );
 }
 
-export { BookMarkCard };
+export { SearchCard };
