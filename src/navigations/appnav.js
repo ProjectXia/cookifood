@@ -89,6 +89,7 @@ function AppNav() {
           name="Shopping Cart"
           component={ShoppingCart}
           options={{
+            tabBarBadge: 0,
             tabBarIcon: ({ focused }) => (
               <TabIcon
                 focused={focused}
