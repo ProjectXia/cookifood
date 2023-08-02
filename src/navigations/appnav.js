@@ -15,6 +15,9 @@ import { Bookmark } from "../screens/bookmark/bookmark";
 import { Settings } from "../screens/settings/settings";
 import { RecipesDetail } from "../screens/recipesDetail/recipesdetail";
 import { ShoppingCart } from "../screens/cart/cart";
+import { Profile } from "../profile/profile";
+import { AboutUs } from "../about/about";
+import { Order } from "../order/order";
 
 // const bottomNav = () => {
 //   <NavigationContainer>
@@ -122,6 +125,9 @@ function AppNav() {
         <Stack.Screen name="Signup" component={SignUP} />
         <Stack.Screen name="Home" component={TabNav} />
         <Stack.Screen name="detail" component={RecipesDetail} />
+        <Stack.Screen name="order" component={Order} />
+        <Stack.Screen name="profile" component={Profile} />
+        <Stack.Screen name="about" component={AboutUs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

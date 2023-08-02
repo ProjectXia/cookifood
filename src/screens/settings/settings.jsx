@@ -32,16 +32,33 @@ function Settings({ navigation }) {
       <Text>Profile | Order Status | About | logout</Text>
       <View style={{ flexDirection: "row" }}>
         <TouchableOpacity style={stylessetting.card}>
-          <Ionicons name="card-outline" size={80} color={"gray"} />
+          <Ionicons
+            name="card-outline"
+            size={80}
+            color={"gray"}
+            onPress={() => {
+              navigation.navigate("profile");
+            }}
+          />
           <Text style={stylessetting.cardText}>Profile</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={stylessetting.card}>
+        <TouchableOpacity
+          style={stylessetting.card}
+          onPress={() => {
+            navigation.navigate("order");
+          }}
+        >
           <Ionicons name="list-circle-outline" size={80} color={"gray"} />
           <Text style={stylessetting.cardText}>My Orders</Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity style={stylessetting.card}>
+        <TouchableOpacity
+          style={stylessetting.card}
+          onPress={() => {
+            navigation.navigate("about");
+          }}
+        >
           <Ionicons
             name="information-circle-outline"
             size={80}

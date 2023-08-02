@@ -19,8 +19,6 @@ function Bookmark({ navigation }) {
   const [showLoading, setShowLoading] = useState(false);
   const [bookID, setBookID] = useState("");
 
-  let allBookMark;
-
   const getRecipe = () => {
     setShowLoading(true);
     firebase
@@ -47,28 +45,53 @@ function Bookmark({ navigation }) {
         console.log({ error });
       });
   };
+  const updateBookmark = (bId, updateB) => {
+    setShowLoading(true);
+    firebase
+      .firestore()
+      .collection("bookmark")
+      .doc(bId)
+      .update({ isbookmark: updateB })
+      .then((response) => {
+        getBookmark();
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+    setShowLoading(false);
+  };
   const __renderListingImage = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
-    // const bId = bookmark.id;
-    // const blist = bookmark.data();
-    //////////////////////////////////////////
-    // if (blist.isbookmark == true) {
-    return (
-      <BookMarkCard
-        title={listing.name}
-        mint={listing.cooktime}
-        serving={listing.serving}
-        img={listing.imgUrl}
-        recipeId={listId}
-      />
-    );
-    // }
+
+    let bookmarkis;
+    let bookId;
+    bookmark.forEach((doc) => {
+      if (doc.data().recipeId == listId) {
+        bookmarkis = doc.data().isbookmark;
+        bookId = doc.id;
+      }
+    });
+    if (bookmarkis === true) {
+      return (
+        <BookMarkCard
+          title={listing.name}
+          mint={listing.cooktime}
+          serving={listing.serving}
+          img={listing.imgUrl}
+          iconName={"bookmark"}
+          iconClick={() => {
+            updateBookmark(bookId, false);
+          }}
+          cartClick={() => {}}
+        />
+      );
+    }
   };
   useEffect(() => {
     getRecipe();
     getBookmark();
-  }, []);
+  }, [bookmark]);
 
   return (
     <View style={stylesbook.mainview}>

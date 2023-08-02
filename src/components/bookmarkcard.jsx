@@ -1,37 +1,15 @@
-import { useState, useEffect } from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { firebase } from "../services/firebaseConfig";
 
-function BookMarkCard({ title, mint, serving, img, recipeId, bookId, isbook }) {
-  const [bookmark, setBookmark] = useState(false);
-  const [bookmarkId, setBookmarkId] = useState("");
-  const [bookmarkupdate, setBookmarkupdate] = useState(false);
-
-  const toggleBookmark = () => {
-    if (bookmark == true) {
-      setBookmark(false);
-    } else if (bookmark == false) {
-      setBookmark(true);
-    }
-  };
-  const updateBookmark = () => {
-    firebase
-      .firestore()
-      .collection("bookmark")
-      .doc(bookId)
-      .update({ isbookmark: bookmarkupdate })
-      .then((response) => {})
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-
-  useEffect(() => {
-    setBookmarkId(bookId);
-    setBookmark(isbook);
-  }, [bookmark]);
-
+function BookMarkCard({
+  title,
+  mint,
+  serving,
+  img,
+  iconName,
+  iconClick,
+  cartClick,
+}) {
   return (
     <View
       style={{
@@ -103,20 +81,12 @@ function BookMarkCard({ title, mint, serving, img, recipeId, bookId, isbook }) {
               elevation: 2,
             }}
           >
-            {bookmark && (
-              <Ionicons
-                name="bookmark"
-                size={30}
-                color={"red"}
-                onPress={() => {
-                  console.log("bookmark = " + bookmark);
-                  setBookmarkupdate(false);
-                  toggleBookmark();
-                  updateBookmark();
-                  // console.log("False bookmark = " + bookmark);
-                }}
-              />
-            )}
+            <Ionicons
+              name={iconName}
+              size={30}
+              color={"red"}
+              onPress={iconClick}
+            />
           </View>
           <View
             style={{
@@ -138,7 +108,7 @@ function BookMarkCard({ title, mint, serving, img, recipeId, bookId, isbook }) {
               name="cart-outline"
               size={30}
               color={"white"}
-              onPress={() => {}}
+              onPress={cartClick}
             />
           </View>
         </View>

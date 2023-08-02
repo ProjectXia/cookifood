@@ -1,7 +1,5 @@
-import { useState, useEffect } from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { firebase } from "../services/firebaseConfig";
 
 function RecipeCard({
   title,
