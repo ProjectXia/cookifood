@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../../services/firebaseConfig";
 import { SearchCard } from "../../components/searchcard";
 
-function Search() {
+function Search({ navigation }) {
   const [category, setCategory] = useState("");
   const [searchRecipe, setSearchRecipe] = useState("");
   const [showLoading, setShowLoading] = useState(false);
@@ -132,6 +132,9 @@ function Search() {
         iconName={"search"}
         showIcon={true}
         iconSize={28}
+        iconPress={() => {
+          navigation.navigate("searchresult");
+        }}
       />
       <View>
         <FlatList
