@@ -15,48 +15,45 @@ import { BookMarkCard } from "../../components/bookmarkcard";
 function Bookmark({ navigation }) {
   const [searchRecipe, setSearchRecipe] = useState("");
   const [isBookmark, setIsBookmark] = useState(false);
+  const [bookmark, setBookmark] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
+  const [bookID, setBookID] = useState("");
 
-  const getRecipeByCat = () => {
+  let allBookMark;
+
+  const getRecipe = () => {
     setShowLoading(true);
     firebase
       .firestore()
       .collection("recipes")
       .get()
       .then((response) => {
-        response.forEach((doc) => {
-          // setSearchRecipe(doc.data().fullname);
-          firebase
-            .firestore()
-            .collection("bookmark")
-            .where("recipeId", "==", doc.id)
-            .get()
-            .then((response) => {
-              //setMybookmarkId(response.docs);
-              response.forEach((doc) => {
-                setIsBookmark(true);
-                if (isBookmark == true) {
-                  setSearchRecipe(response.docs);
-                  setIsBookmark(false);
-                }
-              });
-            })
-            .catch((error) => {
-              console.log({ error });
-            });
-        });
+        setSearchRecipe(response.docs);
       })
       .catch((error) => {
         console.log({ error });
       });
     setShowLoading(false);
   };
-
+  const getBookmark = () => {
+    firebase
+      .firestore()
+      .collection("bookmark")
+      .get()
+      .then((response) => {
+        setBookmark(response.docs);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
   const __renderListingImage = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
+    // const bId = bookmark.id;
+    // const blist = bookmark.data();
     //////////////////////////////////////////
-
+    // if (blist.isbookmark == true) {
     return (
       <BookMarkCard
         title={listing.name}
@@ -66,9 +63,11 @@ function Bookmark({ navigation }) {
         recipeId={listId}
       />
     );
+    // }
   };
   useEffect(() => {
-    getRecipeByCat();
+    getRecipe();
+    getBookmark();
   }, []);
 
   return (
@@ -115,7 +114,7 @@ function Bookmark({ navigation }) {
           </View>
         }
         refreshing={showLoading}
-        onRefresh={getRecipeByCat}
+        onRefresh={getRecipe}
       />
     </View>
   );

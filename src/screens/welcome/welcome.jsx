@@ -2,7 +2,10 @@ import { useEffect } from "react";
 import { View, Text, ImageBackground, Button } from "react-native";
 import { BButton } from "../../components/bbutton";
 import { styles } from "./welcomeStyle";
-import { getUserLoggedInStatus } from "../../services/storageService";
+import {
+  getUserLoggedInStatus,
+  getUserId,
+} from "../../services/storageService";
 import { firebase } from "../../services/firebaseConfig";
 
 function Welcome({ navigation }) {

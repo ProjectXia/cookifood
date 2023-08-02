@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Image, ToastAndroid } from "react-native";
 import { ShowToast, showLoadingLottie } from "../../utils/help";
 import { firebase } from "../../services/firebaseConfig";
@@ -22,11 +22,8 @@ function SignIN({ navigation }) {
   const [showPass, setShowPass] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const loggedIn = getUserLoggedInStatus();
-  const UID = getUserId();
-  console.log("my_uid", UID);
-  console.log("user_logged", loggedIn);
+  const [uuidd, setUUidd] = useState("");
+  const [uname, setUname] = useState("");
 
   const handleShowPass = () => {
     if (showPass === true) {
@@ -35,7 +32,7 @@ function SignIN({ navigation }) {
       setShowPass(true);
     }
   };
-
+  const getCurrentProfile = (uuid) => {};
   const onSignin = () => {
     setShowLoading(true);
 
@@ -43,13 +40,38 @@ function SignIN({ navigation }) {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((authResponse) => {
+        firebase
+          .firestore()
+          .collection("profiles")
+          .where("uuid", "==", authResponse.user.uid)
+          .get()
+          .then((response) => {
+            // setUserName(response.docs.data());
+            response.forEach((doc) => {
+              setUUidd(doc.data().uuid);
+              setUname(doc.data().fullname);
+              console.log(
+                "UUID: " +
+                  doc.data().uuid +
+                  "  ------- Name: " +
+                  doc.data().fullname
+              );
+              storeUserSession(
+                String(doc.data().uuid),
+                "true",
+                email,
+                String(doc.data().fullname)
+              );
+              navigation.replace("Home");
+              // }
+            });
+          })
+          .catch((error) => {
+            console.log({ error });
+          });
+
         setShowLoading(false);
 
-        const userUid = authResponse.user.uid;
-
-        storeUserSession(userUid, "true", email);
-
-        navigation.replace("Home");
         ToastAndroid.showWithGravity(
           "you are the authentic user",
           ToastAndroid.SHORT,
@@ -67,6 +89,11 @@ function SignIN({ navigation }) {
         ShowToast("error", authError.message, "top");
       });
   };
+
+  useEffect(() => {
+    const loggedIn = getUserLoggedInStatus();
+    const UID = getUserId();
+  }, [uuidd, uname]);
 
   return (
     <View

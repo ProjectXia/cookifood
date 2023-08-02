@@ -8,75 +8,11 @@ function RecipeCard({
   imgurl,
   mint,
   serving,
-  trandingRecipeID,
-  catId,
-  bookId,
+  category,
+  iconName,
+  iconClick,
+  titleClick,
 }) {
-  const [category, setCategory] = useState("");
-  const [bookmark, setBookmark] = useState(false);
-  const [bookmarkId, setBookmarkId] = useState("");
-  const [bookmarkupdate, setBookmarkupdate] = useState(false);
-  const [mybookmarkId, setMybookmarkId] = useState([]);
-
-  const getCategory = () => {
-    firebase
-      .firestore()
-      .collection("category")
-      // .where(doc.id, "==", catId)
-      .get()
-      .then((response) => {
-        response.forEach((doc) => {
-          if (doc.id == catId) {
-            setCategory(doc.data().name);
-          }
-        });
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-  const getBookmark = () => {
-    firebase
-      .firestore()
-      .collection("bookmark")
-      .where("recipeId", "==", trandingRecipeID)
-      .get()
-      .then((response) => {
-        setMybookmarkId(response.docs);
-        response.forEach((doc) => {
-          setBookmark(doc.data().isbookmark);
-          setBookmarkId(doc.id);
-        });
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-  const toggleBookmark = () => {
-    if (bookmark == true) {
-      setBookmark(false);
-    } else if (bookmark == false) {
-      setBookmark(true);
-    }
-  };
-  const updateBookmark = () => {
-    firebase
-      .firestore()
-      .collection("bookmark")
-      .doc(bookId)
-      .update({ isbookmark: bookmarkupdate })
-      .then((response) => {
-        getBookmark();
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-
-  useEffect(() => {
-    getCategory();
-    getBookmark();
-  }, []);
   return (
     <View
       style={{
@@ -121,33 +57,12 @@ function RecipeCard({
                 borderRadius: 15,
               }}
             >
-              {bookmark == true ? (
-                <Ionicons
-                  name="bookmark"
-                  size={30}
-                  color={"lightgreen"}
-                  onPress={() => {
-                    console.log("bookmark = " + bookmark);
-                    setBookmarkupdate(false);
-                    toggleBookmark();
-                    updateBookmark();
-                    // console.log("False bookmark = " + bookmark);
-                  }}
-                />
-              ) : (
-                <Ionicons
-                  name="bookmark-outline"
-                  size={30}
-                  color={"lightgreen"}
-                  onPress={() => {
-                    console.log("bookmark = " + bookmark);
-                    setBookmarkupdate(true);
-                    toggleBookmark();
-                    updateBookmark();
-                    // console.log("True bookmark = " + bookmark);
-                  }}
-                />
-              )}
+              <Ionicons
+                name={iconName}
+                size={30}
+                color={"lightgreen"}
+                onPress={iconClick}
+              />
             </View>
           </View>
 
@@ -164,9 +79,7 @@ function RecipeCard({
               flexDirection: "column",
               borderRadius: 15,
             }}
-            onPress={() => {
-              console.log(trandingRecipeID);
-            }}
+            onPress={titleClick}
           >
             <View
               style={{ flexDirection: "row", marginEnd: 10, marginBottom: 10 }}

@@ -1,16 +1,9 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  ScrollView,
-  FlatList,
-} from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { Button } from "react-native-paper";
 import { stylesearch } from "./searchStyle";
 import { InputBox } from "../../components/input";
-import { RecipeCard2 } from "../../components/recipecard2";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../../services/firebaseConfig";
 import { SearchCard } from "../../components/searchcard";

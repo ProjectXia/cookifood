@@ -82,18 +82,6 @@ function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
       </TouchableOpacity>
       <View style={{ flexDirection: "column", flex: 1 }}>
         <View style={{ flexDirection: "row" }}>
-          {/* <TouchableOpacity
-            style={{
-              flex: 1,
-              marginTop: "2%",
-              position: "absolute",
-              paddingHorizontal: 1,
-              justifyContent: "space-evenly",
-              flexDirection: "column",
-              borderRadius: 15,
-              marginLeft: "25%",
-            }}
-          > */}
           <View
             style={{
               flexDirection: "row",
@@ -118,7 +106,6 @@ function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
               {title}
             </Text>
           </View>
-          {/* </TouchableOpacity> */}
           <View
             style={{
               flexDirection: "row",
@@ -162,6 +149,29 @@ function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
                 }}
               />
             )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              width: 35,
+              height: 45,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "red",
+              position: "absolute",
+              marginLeft: "70%",
+              borderBottomLeftRadius: 15,
+              borderBottomRightRadius: 15,
+              paddingBottom: 5,
+              elevation: 2,
+            }}
+          >
+            <Ionicons
+              name="cart"
+              size={30}
+              color={"white"}
+              onPress={() => {}}
+            />
           </View>
         </View>
         <View>

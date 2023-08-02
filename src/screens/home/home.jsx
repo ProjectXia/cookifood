@@ -13,38 +13,34 @@ import { RecipeCard } from "../../components/recipecard";
 import { RecipeCard2 } from "../../components/recipecard2";
 import { stylehome } from "./homeStyle";
 import { firebase } from "../../services/firebaseConfig";
-import { clearUserSession, getUserId } from "../../services/storageService";
+import {
+  clearUserSession,
+  getUserId,
+  getUserName,
+  getUserLoggedInStatus,
+} from "../../services/storageService";
 import LottieView from "lottie-react-native";
+import { Storage } from "expo-storage";
 
 function Home({ navigation }) {
+  // const { user, userId } = route.params;
+
   const [userName, setUserName] = useState("");
   const [trandingRecipe, setTrandingRecipe] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
-  const [category, setCategory] = useState("");
-  const [categoryName, setCategoryName] = useState("");
-  const [bookmarkId, setBookmarkId] = useState("");
-  const UID = getUserId();
+  const [category, setCategory] = useState([]);
+  const [bookmark, setBookmark] = useState([]);
+  const [isbookM, setIsBookM] = useState(false);
 
-  const getCurrentProfile = () => {
-    if (firebase.auth().currentUser == null) {
+  const u = getCurrentProfile;
+
+  const getCurrentProfile = async () => {
+    //console.log(getUserId.toString());
+    if (!getUserLoggedInStatus()) {
       clearUserSession("", "false");
       navigation.replace("Signin");
-      return;
     }
-    firebase
-      .firestore()
-      .collection("profiles")
-      .where("uuid", "==", firebase.auth().currentUser.uid)
-      .get()
-      .then((response) => {
-        // setUserName(response.docs.data());
-        response.forEach((doc) => {
-          setUserName(doc.data().fullname);
-        });
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
+    setUserName(await Storage.getItem({ key: "user_name" }));
   };
 
   const getTrandingRecipe = () => {
@@ -76,6 +72,33 @@ function Home({ navigation }) {
         console.log({ error });
       });
   };
+  const getBookmark = () => {
+    firebase
+      .firestore()
+      .collection("bookmark")
+      .get()
+      .then((response) => {
+        setBookmark(response.docs);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
+  const updateBookmark = (bId, updateB) => {
+    setShowLoading(true);
+    firebase
+      .firestore()
+      .collection("bookmark")
+      .doc(bId)
+      .update({ isbookmark: updateB })
+      .then((response) => {
+        getBookmark();
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+    setShowLoading(false);
+  };
   const __renderCategory = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
@@ -95,21 +118,22 @@ function Home({ navigation }) {
   const __renderTrandingRecipe = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
-    firebase
-      .firestore()
-      .collection("bookmark")
-      .where("recipeId", "==", listId)
-      .get()
-      .then((response) => {
-        // setBookmarkId(response.docs);
-        response.forEach((doc) => {
-          // setBookmark(doc.data().isbookmark);
-          setBookmarkId(doc.id);
-        });
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
+
+    let catname;
+    category.forEach((doc) => {
+      if (doc.id == listing.catId) {
+        catname = doc.data().name;
+      }
+    });
+
+    let bookmarkis;
+    let bookId;
+    bookmark.forEach((doc) => {
+      if (doc.data().recipeId == listId) {
+        bookmarkis = doc.data().isbookmark;
+        bookId = doc.id;
+      }
+    });
 
     return (
       <View>
@@ -119,9 +143,16 @@ function Home({ navigation }) {
           imgurl={listing.imgUrl}
           mint={listing.cooktime}
           serving={listing.serving}
-          trandingRecipeID={listId}
-          catId={listing.catId}
-          bookId={bookmarkId}
+          category={catname}
+          iconName={bookmarkis === true ? "bookmark" : "bookmark-outline"}
+          iconClick={() => {
+            // console.log("Bookm ID: " + bookId);
+            if (bookmarkis === true) {
+              updateBookmark(bookId, false);
+            } else if (bookmarkis === false) {
+              updateBookmark(bookId, true);
+            }
+          }}
         />
       </View>
     );
@@ -131,111 +162,66 @@ function Home({ navigation }) {
     getCurrentProfile();
     getTrandingRecipe();
     getCategory();
-  }, [trandingRecipe]);
+    getBookmark();
+  }, []);
 
   return (
-    <ScrollView>
-      <View style={stylehome.mainview}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{ flexDirection: "column" }}>
-            <Text style={stylehome.heading}>Hello {userName},</Text>
-            <Text style={stylehome.subheading}>
-              What you want to cook today?
-            </Text>
-          </View>
-          {/* <View
-            style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              backgroundColor: "red",
-              width: 45,
-              height: 45,
-              borderRadius: 25,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                textAlign: "center",
-                fontSize: 30,
-              }}
-              onPress={() => {}}
-            >
-              <Text>@</Text>
-            </TouchableOpacity>
-          </View> */}
+    // <ScrollView>
+    <View style={stylehome.mainview}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View style={{ flexDirection: "column" }}>
+          <Text style={stylehome.heading}>Hello {userName},</Text>
+          <Text style={stylehome.subheading}>What you want to cook today?</Text>
         </View>
-        <View style={{ marginVertical: 10 }}>
-          <InputBox
-            iconName={"search"}
-            showIcon={true}
-            placeholder={"Search Recipes"}
-            iconSize={25}
-            iconPress={() => {
-              alert("icon press");
-            }}
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          backgroundColor: "#DAE2B6",
+          width: "100%",
+          height: 100,
+          borderRadius: 15,
+          paddingHorizontal: 15,
+          marginVertical: 5,
+        }}
+      >
+        <View style={{ flexDirection: "column", alignSelf: "center" }}>
+          <Image
+            source={require("../../../assets/recipe.png")}
+            style={{ width: 70, height: 70, alignSelf: "center" }}
           />
         </View>
         <View
           style={{
-            flexDirection: "row",
-            backgroundColor: "#DAE2B6",
-            width: "100%",
-            height: 100,
-            borderRadius: 15,
-            paddingHorizontal: 15,
-            marginVertical: 15,
+            flexDirection: "column",
+            justifyContent: "center",
+            paddingHorizontal: 20,
           }}
         >
-          <View style={{ flexDirection: "column", alignSelf: "center" }}>
-            <Image
-              source={require("../../../assets/recipe.png")}
-              style={{ width: 70, height: 70, alignSelf: "center" }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: "column",
-              justifyContent: "center",
-              paddingHorizontal: 20,
+          <Text style={{ fontSize: 16 }}>You have 12 recipes that</Text>
+          <Text style={{ fontSize: 16 }}>you haven't tried yet</Text>
+          <TouchableOpacity
+            style={{ marginTop: 15 }}
+            onPress={() => {
+              alert("see more");
             }}
           >
-            <Text style={{ fontSize: 16 }}>You have 12 recipes that</Text>
-            <Text style={{ fontSize: 16 }}>you haven't tried yet</Text>
-            <TouchableOpacity
-              style={{ marginTop: 15 }}
-              onPress={() => {
-                alert("see more");
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "#584153",
-                  textDecorationLine: "underline",
-                }}
-              >
-                See Recipes
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View>
-          <Text style={stylehome.heading}>Trending Recipe</Text>
-          {/* <ScrollView horizontal={true}>
-            <View
+            <Text
               style={{
-                flexDirection: "row",
-                height: "85%",
-                justifyContent: "space-between",
+                fontSize: 18,
+                color: "#584153",
+                textDecorationLine: "underline",
               }}
             >
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-              <RecipeCard />
-            </View>
-          </ScrollView> */}
+              See Recipes
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View>
+        <Text style={stylehome.heading}>Trending Recipe</Text>
+        <View style={{ flexDirection: "row" }}>
           <FlatList
             data={trandingRecipe}
             horizontal={true}
@@ -249,26 +235,37 @@ function Home({ navigation }) {
             onRefresh={() => getTrandingRecipe()}
           />
         </View>
+      </View>
+      <View
+        style={{ marginTop: 0, marginBottom: 10, justifyContent: "center" }}
+      >
+        <Text style={stylehome.heading}>Category</Text>
+        <TouchableOpacity style={{ position: "absolute", right: 20 }}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: "gray",
+              fontWeight: "600",
+            }}
+          >
+            View All
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <ScrollView
+        nestedScrollEnabled={true}
+        bounces={false}
+        showsVerticalScrollIndicator={true}
+      >
         <View
-          style={{ marginTop: 20, marginBottom: 20, justifyContent: "center" }}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
         >
-          <Text style={stylehome.heading}>Category</Text>
-          <TouchableOpacity style={{ position: "absolute", right: 20 }}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: "gray",
-                fontWeight: "600",
-              }}
-            >
-              View All
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ justifyContent: "center", alignItems: "center" }}>
           <FlatList
             data={category}
-            initialNumToRender={5}
             renderItem={__renderCategory}
             horizontal={false}
             ListEmptyComponent={
@@ -293,15 +290,16 @@ function Home({ navigation }) {
             onRefresh={() => getCategory()}
           />
         </View>
-        {showLoading && (
-          <LottieView
-            source={require("../../../assets/animations/recipes-book.json")}
-            autoPlay
-            loop
-          />
-        )}
-      </View>
-    </ScrollView>
+      </ScrollView>
+      {showLoading && (
+        <LottieView
+          source={require("../../../assets/animations/recipes-book.json")}
+          autoPlay
+          loop
+        />
+      )}
+    </View>
+    // </ScrollView>
   );
 }
 

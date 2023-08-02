@@ -3,30 +3,10 @@ import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../services/firebaseConfig";
 
-function BookMarkCard({ title, mint, serving, img, recipeId }) {
+function BookMarkCard({ title, mint, serving, img, recipeId, bookId, isbook }) {
   const [bookmark, setBookmark] = useState(false);
   const [bookmarkId, setBookmarkId] = useState("");
   const [bookmarkupdate, setBookmarkupdate] = useState(false);
-
-  const getBookmark = () => {
-    firebase
-      .firestore()
-      .collection("bookmark")
-      .where("recipeId", "==", recipeId)
-      .get()
-      .then((response) => {
-        //setMybookmarkId(response.docs);
-        response.forEach((doc) => {
-          if (doc.data().isbookmark == true) {
-            setBookmark(doc.data().isbookmark);
-            setBookmarkId(doc.id);
-          }
-        });
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
 
   const toggleBookmark = () => {
     if (bookmark == true) {
@@ -41,17 +21,16 @@ function BookMarkCard({ title, mint, serving, img, recipeId }) {
       .collection("bookmark")
       .doc(bookId)
       .update({ isbookmark: bookmarkupdate })
-      .then((response) => {
-        getBookmark();
-      })
+      .then((response) => {})
       .catch((error) => {
         console.log({ error });
       });
   };
 
   useEffect(() => {
-    getBookmark();
-  }, []);
+    setBookmarkId(bookId);
+    setBookmark(isbook);
+  }, [bookmark]);
 
   return (
     <View
@@ -84,18 +63,6 @@ function BookMarkCard({ title, mint, serving, img, recipeId }) {
       </TouchableOpacity>
       <View style={{ flexDirection: "column", flex: 1 }}>
         <View style={{ flexDirection: "row" }}>
-          {/* <TouchableOpacity
-            style={{
-              flex: 1,
-              marginTop: "2%",
-              position: "absolute",
-              paddingHorizontal: 1,
-              justifyContent: "space-evenly",
-              flexDirection: "column",
-              borderRadius: 15,
-              marginLeft: "25%",
-            }}
-          > */}
           <View
             style={{
               flexDirection: "row",
@@ -120,7 +87,6 @@ function BookMarkCard({ title, mint, serving, img, recipeId }) {
               {title}
             </Text>
           </View>
-          {/* </TouchableOpacity> */}
           <View
             style={{
               flexDirection: "row",
@@ -137,7 +103,7 @@ function BookMarkCard({ title, mint, serving, img, recipeId }) {
               elevation: 2,
             }}
           >
-            {bookmark == true ? (
+            {bookmark && (
               <Ionicons
                 name="bookmark"
                 size={30}
@@ -150,20 +116,30 @@ function BookMarkCard({ title, mint, serving, img, recipeId }) {
                   // console.log("False bookmark = " + bookmark);
                 }}
               />
-            ) : (
-              <Ionicons
-                name="bookmark-outline"
-                size={30}
-                color={"red"}
-                onPress={() => {
-                  console.log("bookmark = " + bookmark);
-                  setBookmarkupdate(true);
-                  toggleBookmark();
-                  updateBookmark();
-                  // console.log("True bookmark = " + bookmark);
-                }}
-              />
             )}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              width: 35,
+              height: 45,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "red",
+              position: "absolute",
+              marginLeft: "70%",
+              borderBottomLeftRadius: 15,
+              borderBottomRightRadius: 15,
+              paddingBottom: 5,
+              elevation: 2,
+            }}
+          >
+            <Ionicons
+              name="cart-outline"
+              size={30}
+              color={"white"}
+              onPress={() => {}}
+            />
           </View>
         </View>
         <View>
