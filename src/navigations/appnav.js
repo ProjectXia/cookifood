@@ -15,9 +15,9 @@ import { Bookmark } from "../screens/bookmark/bookmark";
 import { Settings } from "../screens/settings/settings";
 import { RecipesDetail } from "../screens/recipesDetail/recipesdetail";
 import { ShoppingCart } from "../screens/cart/cart";
-import { Profile } from "../profile/profile";
-import { AboutUs } from "../about/about";
-import { Order } from "../order/order";
+import { Profile } from "../screens/profile/profile";
+import { AboutUs } from "../screens/about/about";
+import { Order } from "../screens/order/order";
 import { SearchResult } from "../screens/searchResult/searchResult";
 
 // const bottomNav = () => {

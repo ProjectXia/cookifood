@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  ScrollView,
-  FlatList,
-  TurboModuleRegistry,
-} from "react-native";
+import { View, Text, FlatList } from "react-native";
 import { stylesbook } from "./bookmarkStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../../services/firebaseConfig";
@@ -14,10 +7,8 @@ import { BookMarkCard } from "../../components/bookmarkcard";
 
 function Bookmark({ navigation }) {
   const [searchRecipe, setSearchRecipe] = useState("");
-  const [isBookmark, setIsBookmark] = useState(false);
   const [bookmark, setBookmark] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
-  const [bookID, setBookID] = useState("");
 
   const getRecipe = () => {
     setShowLoading(true);
