@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { View, Text, ToastAndroid } from "react-native";
 import { stylesprofile } from "./profileStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { InputBox } from "../../components/input";
@@ -48,21 +48,28 @@ function Profile({ navigation }) {
       .update({ fullname: name, address: address })
       .then((response) => {
         getCurrentProfile();
-        alert("Profile updated successfully!");
+        ToastAndroid.show("Profile updated successfully!", ToastAndroid.LONG);
       })
       .catch((error) => {
         console.log({ error });
       });
   };
-
   const changePassword = (currentPassword, newPassword) => {
-    this.reauthenticate(currentPassword)
+    const user = firebase.auth().currentUser;
+    const credential = firebase.auth.EmailAuthProvider.credential(
+      user.email,
+      currentPassword
+    );
+
+    user
+      .reauthenticateWithCredential(credential)
       .then(() => {
-        var user = firebase.auth().currentUser;
         user
           .updatePassword(newPassword)
           .then(() => {
             console.log("Password updated!");
+            // Show a success message, e.g., using ToastAndroid
+            ToastAndroid.show("Password Updated!", ToastAndroid.LONG);
           })
           .catch((error) => {
             console.log(error);
@@ -70,6 +77,7 @@ function Profile({ navigation }) {
       })
       .catch((error) => {
         console.log(error);
+        // Handle reauthentication failure (e.g., show error message)
       });
   };
 
@@ -127,7 +135,9 @@ function Profile({ navigation }) {
               currentPass.length < 6 ||
               newPass.length < 6
             ) {
-              alert("c or n empty");
+              ToastAndroid.show("c or n empty", ToastAndroid.SHORT);
+            } else {
+              changePassword(currentPass, newPass);
             }
             if (name == "" || name.length > 2) {
               alert("Full name is empty");
