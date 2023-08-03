@@ -6,6 +6,7 @@ function RecipeCard({
   imgurl,
   mint,
   serving,
+  price,
   category,
   iconName,
   iconClick,
@@ -92,7 +93,8 @@ function RecipeCard({
             </View>
 
             <Text style={{ fontWeight: "500", color: "white" }}>
-              {mint} mins | {serving} Serving
+              {mint} mins | {serving} Serving | {"Rs."}
+              {price}
             </Text>
           </TouchableOpacity>
         </View>

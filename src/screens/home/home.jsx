@@ -15,8 +15,7 @@ import { stylehome } from "./homeStyle";
 import { firebase } from "../../services/firebaseConfig";
 import {
   clearUserSession,
-  getUserId,
-  getUserName,
+  storeRecipeId,
   getUserLoggedInStatus,
 } from "../../services/storageService";
 import LottieView from "lottie-react-native";
@@ -128,10 +127,12 @@ function Home({ navigation }) {
 
     let bookmarkis;
     let bookId;
+    let recId;
     bookmark.forEach((doc) => {
       if (doc.data().recipeId == listId) {
         bookmarkis = doc.data().isbookmark;
         bookId = doc.id;
+        recId = doc.data().recipeId;
       }
     });
 
@@ -143,6 +144,7 @@ function Home({ navigation }) {
           imgurl={listing.imgUrl}
           mint={listing.cooktime}
           serving={listing.serving}
+          price={listing.price}
           category={catname}
           iconName={bookmarkis === true ? "bookmark" : "bookmark-outline"}
           iconClick={() => {
@@ -152,6 +154,19 @@ function Home({ navigation }) {
             } else if (bookmarkis === false) {
               updateBookmark(bookId, true);
             }
+          }}
+          titleClick={() => {
+            // storeRecipeId(recId);
+            console.log("recipe select : " + recId);
+            navigation.navigate("detail", {
+              recipeID: recId,
+              bookm: bookmarkis,
+              rname: listing.name,
+              mint: listing.cooktime,
+              serving: listing.serving,
+              price: listing.price,
+              imgUrl: listing.imgUrl,
+            });
           }}
         />
       </View>

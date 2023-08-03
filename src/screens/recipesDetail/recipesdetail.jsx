@@ -1,13 +1,26 @@
 import React from "react";
-import { View, Text, ImageBackground, Image, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { IngredientCard } from "../../components/ingredient";
+import { Storage } from "expo-storage";
+import { Button } from "react-native-paper";
 
-function RecipesDetail() {
+function RecipesDetail({ route, navigation }) {
+  const { recipeID, bookm, rname, mint, serving, price, imgUrl } = route.params;
+
+  console.log("detail Recipe Id: " + recipeID);
+
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <ImageBackground
-        source={require("../../../assets/image.png")}
+        source={{ uri: imgUrl }}
         style={{ width: "100%", height: 300, opacity: 0.9 }}
       >
         {/* <View
@@ -37,9 +50,12 @@ function RecipesDetail() {
               padding: 2,
             }}
             color={"white"}
+            onPress={() => {
+              navigation.back();
+            }}
           />
           <Ionicons
-            name="bookmark-outline"
+            name={bookm === true ? "bookmark" : "bookmark-outline"}
             size={35}
             style={{ position: "absolute", left: "80%" }}
             color={"lightgreen"}
@@ -98,21 +114,44 @@ function RecipesDetail() {
               Maria
             </Text>
           </View>
-          <Ionicons
-            name="arrow-forward"
-            size={30}
+          {/* <TouchableOpacity
+            onPress={() => {
+              alert("Recipe added successfully!");
+            }}
+          >
+            <Ionicons
+              name="cart-outline"
+              size={35}
+              style={{
+                position: "absolute",
+                top: 25,
+                right: 10,
+                borderColor: "white",
+                borderWidth: 1,
+                borderRadius: 10,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                padding: 2,
+              }}
+              color={"white"}
+            />
+          </TouchableOpacity> */}
+          <Text
             style={{
+              fontSize: 24,
+              color: "white",
               position: "absolute",
               top: 25,
-              right: 20,
+              right: 25,
               borderColor: "white",
               borderWidth: 1,
               borderRadius: 10,
               backgroundColor: "rgba(0, 0, 0, 0.7)",
-              padding: 2,
+              paddingVertical: 5,
+              paddingHorizontal: 20,
             }}
-            color={"white"}
-          />
+          >
+            Rs.{price}
+          </Text>
         </View>
         {/* </View> */}
       </ImageBackground>
@@ -128,22 +167,12 @@ function RecipesDetail() {
         }}
       >
         <Text style={{ width: 200, fontSize: 24, fontWeight: "800" }}>
-          Spaghetti With Shrimp Sauce
+          {rname}
         </Text>
         <Text
           style={{ position: "absolute", top: 90, left: 22, color: "gray" }}
         >
-          30 mins | 1 Serving
-        </Text>
-        <Text
-          style={{ position: "absolute", top: 70, left: "88%", color: "gray" }}
-        >
-          4 people
-        </Text>
-        <Text
-          style={{ position: "absolute", top: 90, left: "76%", color: "gray" }}
-        >
-          Already try this!
+          {mint} mins | {serving} Serving
         </Text>
         <View
           style={{
@@ -155,54 +184,13 @@ function RecipesDetail() {
             justifyContent: "center",
           }}
         >
-          <Image
-            source={require("../../../assets/p1.jpg")}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 30,
-              position: "absolute",
-              left: 0,
-              borderColor: "white",
-              borderWidth: 1,
+          <TouchableOpacity
+            onPress={() => {
+              alert("Recipe added successfully!");
             }}
-          />
-          <Image
-            source={require("../../../assets/p2.jpg")}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 30,
-              position: "absolute",
-              left: 30,
-              borderColor: "white",
-              borderWidth: 1,
-            }}
-          />
-          <Image
-            source={require("../../../assets/p3.jpg")}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 30,
-              position: "absolute",
-              left: 60,
-              borderColor: "white",
-              borderWidth: 1,
-            }}
-          />
-          <Image
-            source={require("../../../assets/p4.jpg")}
-            style={{
-              width: 50,
-              height: 50,
-              borderRadius: 30,
-              position: "absolute",
-              left: 90,
-              borderColor: "white",
-              borderWidth: 1,
-            }}
-          />
+          >
+            <Button mode="contained">Add to Cart</Button>
+          </TouchableOpacity>
         </View>
       </View>
       <View
