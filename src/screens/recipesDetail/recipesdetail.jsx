@@ -1,21 +1,56 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
   ImageBackground,
   Image,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { IngredientCard } from "../../components/ingredient";
 import { Storage } from "expo-storage";
 import { Button } from "react-native-paper";
+import { firebase } from "../../services/firebaseConfig";
 
 function RecipesDetail({ route, navigation }) {
   const { recipeID, bookm, rname, mint, serving, price, imgUrl } = route.params;
 
   console.log("detail Recipe Id: " + recipeID);
+
+  const [ingredient, setIngredient] = useState([]);
+  const [showLoading, setShowLoading] = useState(false);
+  const [count, setCount] = useState();
+
+  const getIngrediants = () => {
+    firebase
+      .firestore()
+      .collection("ingrediants")
+      .where("recipeId", "==", recipeID)
+      .get()
+      .then((response) => {
+        setIngredient(response.docs);
+        setCount(response.docs.length);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
+  const __renderIngredient = ({ item, index }) => {
+    const listing = item.data();
+    const listId = item.id;
+    // setCount(listing.count);
+    let num = index + 1;
+    return (
+      <View>
+        <IngredientCard
+          iconName={num <= count ? num : ""}
+          IngredientName={listing.name}
+          IngredientMsr={listing.quantity}
+        />
+      </View>
+    );
+  };
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
@@ -211,20 +246,37 @@ function RecipesDetail({ route, navigation }) {
             color: "gray",
           }}
         >
-          6 items
+          {count} items
         </Text>
         <View style={{ height: 20 }} />
-        <ScrollView>
-          <IngredientCard
-            iconName={require("../../../assets/Ingredients/pasta.png")}
-            IngredientName="Spaghettti pasta"
-            IngredientMsr={"100 g"}
-          />
-          <IngredientCard
-            iconName={require("../../../assets/Ingredients/olive-oil.png")}
-            IngredientName="Olive Oil"
-            IngredientMsr={"2 tbsp"}
-          />
+        <FlatList
+          data={ingredient}
+          renderItem={__renderIngredient}
+          horizontal={false}
+          ListEmptyComponent={
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "gray",
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
+                No listing found !
+              </Text>
+            </View>
+          }
+          refreshing={showLoading}
+          onRefresh={() => getIngrediants()}
+        />
+        {/* <ScrollView>
+          
+         
           <IngredientCard
             iconName={require("../../../assets/Ingredients/lobster.png")}
             IngredientName="Fresh Shrimp"
@@ -245,7 +297,7 @@ function RecipesDetail({ route, navigation }) {
             IngredientName="Black Pepper"
             IngredientMsr={"1/4 tbsp"}
           />
-        </ScrollView>
+        </ScrollView> */}
       </View>
     </View>
   );

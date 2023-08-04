@@ -22,7 +22,7 @@ function IngredientCard({ iconName, IngredientName, IngredientMsr }) {
           borderRadius: 5,
         }}
       >
-        <Image source={iconName} style={{ width: 30, height: 30 }} />
+        <Text style={{ fontSize: 16 }}>{iconName}</Text>
       </View>
       {/* <Ionicons name={iconName} size={35} /> */}
       <Text
