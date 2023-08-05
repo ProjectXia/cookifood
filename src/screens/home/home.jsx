@@ -218,7 +218,7 @@ function Home({ navigation }) {
           <TouchableOpacity
             style={{ marginTop: 15 }}
             onPress={() => {
-              alert("see more");
+              navigation.navigate("Search");
             }}
           >
             <Text
@@ -255,7 +255,12 @@ function Home({ navigation }) {
         style={{ marginTop: 0, marginBottom: 10, justifyContent: "center" }}
       >
         <Text style={stylehome.heading}>Category</Text>
-        <TouchableOpacity style={{ position: "absolute", right: 20 }}>
+        <TouchableOpacity
+          style={{ position: "absolute", right: 20 }}
+          onPress={() => {
+            navigation.navigate("Search");
+          }}
+        >
           <Text
             style={{
               fontSize: 16,

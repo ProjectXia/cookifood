@@ -15,6 +15,7 @@ function Search({ navigation }) {
   const [select, setSelect] = useState("");
   const [bookmarkId, setBookmarkId] = useState("");
   const [bookmark, setBookmark] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   const getCategory = () => {
     firebase
@@ -125,17 +126,9 @@ function Search({ navigation }) {
         }}
       >
         <Ionicons name="search-outline" size={30} color={"gray"} />
-        <Text style={{ fontSize: 20 }}>Search Recipes</Text>
+        <Text style={{ fontSize: 20 }}>Search Recipes By Category</Text>
       </View>
-      <InputBox
-        placeholder={"Search recipes here!"}
-        iconName={"search"}
-        showIcon={true}
-        iconSize={28}
-        iconPress={() => {
-          navigation.navigate("searchresult");
-        }}
-      />
+
       <View>
         <FlatList
           data={category}

@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-const stylessearchr = StyleSheet.create({
+const stylesshipping = StyleSheet.create({
   mainview: {
     flex: 1,
     paddingHorizontal: 5,
@@ -19,4 +19,4 @@ const stylessearchr = StyleSheet.create({
   subheading: { color: "gray", fontSize: 16, fontWeight: "400" },
 });
 
-export { stylessearchr };
+export { stylesshipping };

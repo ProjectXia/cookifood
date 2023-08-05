@@ -17,25 +17,19 @@ function RecipeCard2({ cwidth = "100%", title, imgurl, descrp }) {
         marginVertical: 5,
       }}
     >
-      <TouchableOpacity
-        onPress={() => {
-          alert(title + " -> img click");
+      <ImageBackground
+        source={{ uri: imgurl }}
+        style={{
+          height: 100,
+          width: 100,
+          position: "absolute",
+          marginLeft: 7,
+          marginTop: 3,
         }}
-      >
-        <ImageBackground
-          source={{ uri: imgurl }}
-          style={{
-            height: 100,
-            width: 100,
-            position: "absolute",
-            marginLeft: -17,
-            marginTop: 3,
-          }}
-          imageStyle={{
-            borderRadius: 15,
-          }}
-        />
-      </TouchableOpacity>
+        imageStyle={{
+          borderRadius: 15,
+        }}
+      />
       <View style={{ flexDirection: "column", flex: 1 }}>
         <View style={{ flexDirection: "row" }}>
           <TouchableOpacity

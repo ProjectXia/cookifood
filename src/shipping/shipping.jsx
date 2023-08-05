@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text } from "react-native";
-import { stylessearchr } from "./searchResultStyle";
+import { stylesshipping } from "./shippingStyle";
 import { Ionicons } from "@expo/vector-icons";
 
-function SearchResult() {
+function Shipping() {
   return (
-    <View style={stylessearchr.mainview}>
+    <View style={stylesshipping.mainview}>
       <View
         style={{
           height: 55,
@@ -20,12 +20,12 @@ function SearchResult() {
           top: 15,
         }}
       >
-        <Ionicons name="search-circle-outline" color={"gray"} size={38} />
-        <Text style={{ fontSize: 20 }}>Search Result</Text>
+        <Ionicons name="information-circle-outline" color={"gray"} size={38} />
+        <Text style={{ fontSize: 20 }}>Check Out(Shipping Address)</Text>
       </View>
-      <Text>Search Result is Empty</Text>
+      <Text>Shipping Address</Text>
     </View>
   );
 }
 
-export { SearchResult };
+export { Shipping };

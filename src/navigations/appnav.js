@@ -18,7 +18,7 @@ import { ShoppingCart } from "../screens/cart/cart";
 import { Profile } from "../screens/profile/profile";
 import { AboutUs } from "../screens/about/about";
 import { Order } from "../screens/order/order";
-import { SearchResult } from "../screens/searchResult/searchResult";
+import { Shipping } from "../shipping/shipping";
 
 // const bottomNav = () => {
 //   <NavigationContainer>
@@ -129,7 +129,7 @@ function AppNav() {
         <Stack.Screen name="order" component={Order} />
         <Stack.Screen name="profile" component={Profile} />
         <Stack.Screen name="about" component={AboutUs} />
-        <Stack.Screen name="searchresult" component={SearchResult} />
+        <Stack.Screen name="shipping" component={Shipping} />
       </Stack.Navigator>
     </NavigationContainer>
   );

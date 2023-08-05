@@ -32,7 +32,11 @@ function SignIN({ navigation }) {
       setShowPass(true);
     }
   };
-  const getCurrentProfile = (uuid) => {};
+  const sessionCheck = () => {
+    if (getUserLoggedInStatus()) {
+      navigation.replace("Home");
+    }
+  };
   const onSignin = () => {
     setShowLoading(true);
 
@@ -91,8 +95,9 @@ function SignIN({ navigation }) {
   };
 
   useEffect(() => {
-    const loggedIn = getUserLoggedInStatus();
-    const UID = getUserId();
+    // const loggedIn = getUserLoggedInStatus();
+    // const UID = getUserId();
+    sessionCheck();
   }, [uuidd, uname]);
 
   return (

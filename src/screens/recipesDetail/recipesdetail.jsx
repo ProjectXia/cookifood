@@ -21,6 +21,8 @@ function RecipesDetail({ route, navigation }) {
   const [ingredient, setIngredient] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
   const [count, setCount] = useState();
+  const [serv, setServ] = useState();
+  const [cartText, setCartText] = useState("Add to Cart");
 
   const getIngrediants = () => {
     firebase
@@ -39,7 +41,7 @@ function RecipesDetail({ route, navigation }) {
   const __renderIngredient = ({ item, index }) => {
     const listing = item.data();
     const listId = item.id;
-    // setCount(listing.count);
+
     let num = index + 1;
     return (
       <View>
@@ -51,6 +53,11 @@ function RecipesDetail({ route, navigation }) {
       </View>
     );
   };
+  useEffect(() => {
+    getIngrediants();
+    setServ(serving);
+    setCartText("Add to Cart");
+  }, []);
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
@@ -58,13 +65,6 @@ function RecipesDetail({ route, navigation }) {
         source={{ uri: imgUrl }}
         style={{ width: "100%", height: 300, opacity: 0.9 }}
       >
-        {/* <View
-          style={{
-            flex: 1,
-            backgroundColor: "white",
-            opacity: 0.5,
-          }}
-        > */}
         <View
           style={{
             width: "100%",
@@ -149,27 +149,6 @@ function RecipesDetail({ route, navigation }) {
               Maria
             </Text>
           </View>
-          {/* <TouchableOpacity
-            onPress={() => {
-              alert("Recipe added successfully!");
-            }}
-          >
-            <Ionicons
-              name="cart-outline"
-              size={35}
-              style={{
-                position: "absolute",
-                top: 25,
-                right: 10,
-                borderColor: "white",
-                borderWidth: 1,
-                borderRadius: 10,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                padding: 2,
-              }}
-              color={"white"}
-            />
-          </TouchableOpacity> */}
           <Text
             style={{
               fontSize: 24,
@@ -204,11 +183,48 @@ function RecipesDetail({ route, navigation }) {
         <Text style={{ width: 200, fontSize: 24, fontWeight: "800" }}>
           {rname}
         </Text>
-        <Text
-          style={{ position: "absolute", top: 90, left: 22, color: "gray" }}
+        <View
+          style={{
+            position: "absolute",
+            top: 90,
+            left: 22,
+            color: "gray",
+          }}
         >
-          {mint} mins | {serving} Serving
-        </Text>
+          <Text>
+            {mint} mins |{" "}
+            <Button
+              mode="elevated"
+              onPress={() => {
+                if (serv >= 2) {
+                  let newServing = serv - 1;
+                  setServ(newServing);
+                  if (newServing < 10) {
+                    setCartText("Add to Cart");
+                  }
+                }
+              }}
+            >
+              -
+            </Button>
+            <Button mode="outlined">{serv}</Button>
+            <Button
+              mode="elevated"
+              onPress={() => {
+                let newServing = serv + 1;
+                setServ(newServing);
+                if (serv >= 9) {
+                  setCartText("Special Order");
+                } else {
+                  setCartText("Add to Cart");
+                }
+              }}
+            >
+              +
+            </Button>
+            Serving
+          </Text>
+        </View>
         <View
           style={{
             width: "40%",
@@ -224,7 +240,7 @@ function RecipesDetail({ route, navigation }) {
               alert("Recipe added successfully!");
             }}
           >
-            <Button mode="contained">Add to Cart</Button>
+            <Button mode="contained">{cartText}</Button>
           </TouchableOpacity>
         </View>
       </View>
@@ -267,37 +283,13 @@ function RecipesDetail({ route, navigation }) {
                   fontWeight: "600",
                 }}
               >
-                No listing found !
+                No Ingredient found !
               </Text>
             </View>
           }
           refreshing={showLoading}
           onRefresh={() => getIngrediants()}
         />
-        {/* <ScrollView>
-          
-         
-          <IngredientCard
-            iconName={require("../../../assets/Ingredients/lobster.png")}
-            IngredientName="Fresh Shrimp"
-            IngredientMsr={"100 g"}
-          />
-          <IngredientCard
-            iconName={require("../../../assets/Ingredients/tomato.png")}
-            IngredientName="Campari tomatoes"
-            IngredientMsr={"100 g"}
-          />
-          <IngredientCard
-            iconName={require("../../../assets/Ingredients/salt-shaker.png")}
-            IngredientName="Salt"
-            IngredientMsr={"3/4 tbsp"}
-          />
-          <IngredientCard
-            iconName={require("../../../assets/Ingredients/pepper.png")}
-            IngredientName="Black Pepper"
-            IngredientMsr={"1/4 tbsp"}
-          />
-        </ScrollView> */}
       </View>
     </View>
   );
