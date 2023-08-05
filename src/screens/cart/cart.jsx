@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { CartCard } from "../../components/cartcard";
 import { Button } from "react-native-paper";
 
-function ShoppingCart() {
+function ShoppingCart({ navigation }) {
   return (
     <View style={stylescart.mainview}>
       <View
@@ -80,7 +80,12 @@ function ShoppingCart() {
           </View>
         </View>
         <View
-          style={{ flexDirection: "row", height: "25%", marginVertical: 3 }}
+          style={{
+            flexDirection: "row",
+            height: "25%",
+            marginVertical: 3,
+            marginBottom: 20,
+          }}
         >
           <View style={{ flexDirection: "row" }}>
             <View
@@ -111,13 +116,8 @@ function ShoppingCart() {
 
         <Button
           mode="contained"
-          style={{
-            position: "absolute",
-            bottom: 5,
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            marginLeft: 10,
+          onPress={() => {
+            navigation.navigate("shipping");
           }}
         >
           Checkout
