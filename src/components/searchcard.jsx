@@ -3,7 +3,7 @@ import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../services/firebaseConfig";
 
-function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
+function SearchCard({ title, mint, serving, img, recipeId, bookId, imgClick }) {
   const [bookmark, setBookmark] = useState(false);
   const [bookmarkId, setBookmarkId] = useState("");
   const [bookmarkupdate, setBookmarkupdate] = useState(false);
@@ -65,7 +65,7 @@ function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
         marginVertical: 5,
       }}
     >
-      <TouchableOpacity>
+      <TouchableOpacity onPress={imgClick}>
         <ImageBackground
           source={{ uri: img }}
           style={{
@@ -150,7 +150,7 @@ function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
               />
             )}
           </View>
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               width: 35,
@@ -172,7 +172,7 @@ function SearchCard({ title, mint, serving, img, recipeId, bookId }) {
               color={"white"}
               onPress={() => {}}
             />
-          </View>
+          </View> */}
         </View>
         <View>
           <Text

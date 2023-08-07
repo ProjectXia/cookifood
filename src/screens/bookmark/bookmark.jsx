@@ -74,7 +74,17 @@ function Bookmark({ navigation }) {
           iconClick={() => {
             updateBookmark(bookId, false);
           }}
-          cartClick={() => {}}
+          imgClick={() => {
+            navigation.navigate("detail", {
+              recipeID: recId,
+              bookm: bookmarkis,
+              rname: listing.name,
+              mint: listing.cooktime,
+              serving: listing.serving,
+              price: listing.price,
+              imgUrl: listing.imgUrl,
+            });
+          }}
         />
       );
     }

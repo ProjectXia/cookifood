@@ -65,6 +65,7 @@ async function clearUserSession(uid, sessionState) {
   try {
     await Storage.setItem({ key: "user_uid", value: uid });
     await Storage.setItem({ key: "user_is_logged_in", value: sessionState });
+    await Storage.setItem({ key: "user_name", value: "" });
   } catch (error) {
     console.log(error.message);
   }

@@ -33,7 +33,7 @@ function SignIN({ navigation }) {
     }
   };
   const sessionCheck = () => {
-    if (getUserLoggedInStatus()) {
+    if (getUserLoggedInStatus() === true) {
       navigation.replace("Home");
     }
   };

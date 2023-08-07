@@ -1,0 +1,20 @@
+name: cookifood
+packages:
+  - path: src\navigations
+  - path: src\screens\about
+  - path: src\screens\bookmark
+  - path: src\screens\cart
+  - path: src\screens\home
+  - path: src\screens\order
+  - path: src\screens\profile
+  - path: src\screens\recipesDetail
+  - path: src\screens\search
+  - path: src\screens\settings
+  - path: src\screens\signin
+  - path: src\screens\signup
+  - path: src\screens\welcome
+  - path: src\services
+  - path: src\shipping
+  - path: src\utils
+language: javascript
+appmap_dir: tmp/appmap

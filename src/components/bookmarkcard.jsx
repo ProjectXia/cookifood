@@ -8,7 +8,7 @@ function BookMarkCard({
   img,
   iconName,
   iconClick,
-  cartClick,
+  imgClick,
 }) {
   return (
     <View
@@ -24,7 +24,7 @@ function BookMarkCard({
         marginVertical: 5,
       }}
     >
-      <TouchableOpacity>
+      <TouchableOpacity onPress={imgClick}>
         <ImageBackground
           source={{ uri: img }}
           style={{
@@ -88,7 +88,7 @@ function BookMarkCard({
               onPress={iconClick}
             />
           </View>
-          <View
+          {/* <View
             style={{
               flexDirection: "row",
               width: 35,
@@ -110,7 +110,7 @@ function BookMarkCard({
               color={"white"}
               onPress={cartClick}
             />
-          </View>
+          </View> */}
         </View>
         <View>
           <Text

@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text } from "react-native";
 import { stylesshipping } from "./shippingStyle";
 import { Ionicons } from "@expo/vector-icons";
+import { Button } from "react-native-paper";
+import { InputBox } from "../components/input";
 
-function Shipping() {
+function Shipping({ navigation }) {
+  const [address, setAddress] = useState("");
   return (
     <View style={stylesshipping.mainview}>
       <View
@@ -24,6 +27,16 @@ function Shipping() {
         <Text style={{ fontSize: 20 }}>Check Out(Shipping Address)</Text>
       </View>
       <Text>Shipping Address</Text>
+      <InputBox
+        placeholder={"Add Shipping Address"}
+        value={address}
+        onTextChange={setAddress}
+        iconName={"home"}
+      />
+      <Text>Payment Method (COD)</Text>
+      <Button mode="elevated" onPress={() => {}}>
+        Complete Order
+      </Button>
     </View>
   );
 }

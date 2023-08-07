@@ -1,11 +1,60 @@
-import React from "react";
-import { View, Text } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, FlatList } from "react-native";
 import { stylescart } from "./cartStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { CartCard } from "../../components/cartcard";
 import { Button } from "react-native-paper";
+import { firebase } from "../../services/firebaseConfig";
 
 function ShoppingCart({ navigation }) {
+  const [items, setItems] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [showLoading, setShowLoading] = useState(false);
+  const [orderlines, setOrderlines] = useState([]);
+  const [count, setCount] = useState(0);
+  const [mprice, setMprice] = useState(0);
+
+  let grandTotal = 0;
+
+  const getOrderListing = () => {
+    setShowLoading(true);
+    firebase
+      .firestore()
+      .collection("orderlines")
+      .get()
+      .then((response) => {
+        setOrderlines(response.docs);
+        setItems(response.docs.length);
+        setShowLoading(false);
+      })
+      .catch((error) => {
+        console.log({ error });
+        setShowLoading(false);
+      });
+  };
+
+  const __renderOrderlines = ({ item }) => {
+    const listing = item.data();
+    const listId = item.id;
+
+    grandTotal = grandTotal + listing.price;
+    setTotal(grandTotal);
+    // setCount();
+    // setMprice(listing.price);
+    return (
+      <CartCard
+        title={listing.title}
+        quantity={listing.quantity}
+        price={listing.price}
+        orderlId={listId}
+      />
+    );
+  };
+
+  useEffect(() => {
+    getOrderListing();
+  }, []);
+
   return (
     <View style={stylescart.mainview}>
       <View
@@ -37,7 +86,31 @@ function ShoppingCart({ navigation }) {
           alignItems: "center",
         }}
       >
-        <Text>Shopping Cart is Empty</Text>
+        <FlatList
+          data={orderlines}
+          renderItem={__renderOrderlines}
+          horizontal={false}
+          ListEmptyComponent={
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  color: "gray",
+                  fontSize: 16,
+                  fontWeight: "600",
+                }}
+              >
+                Shopping cart is empty!
+              </Text>
+            </View>
+          }
+          refreshing={showLoading}
+          onRefresh={() => getOrderListing()}
+        />
       </View>
       <View
         style={{
@@ -75,7 +148,7 @@ function ShoppingCart({ navigation }) {
                 alignItems: "flex-end",
               }}
             >
-              <Text>2</Text>
+              <Text>{items}</Text>
             </View>
           </View>
         </View>
@@ -109,7 +182,7 @@ function ShoppingCart({ navigation }) {
                 alignItems: "flex-end",
               }}
             >
-              <Text>Rs. 300</Text>
+              <Text>Rs. {total}</Text>
             </View>
           </View>
         </View>
@@ -123,8 +196,6 @@ function ShoppingCart({ navigation }) {
           Checkout
         </Button>
       </View>
-
-      {/* <CartCard /> */}
     </View>
   );
 }
