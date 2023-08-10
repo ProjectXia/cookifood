@@ -19,6 +19,8 @@ import { Profile } from "../screens/profile/profile";
 import { AboutUs } from "../screens/about/about";
 import { Order } from "../screens/order/order";
 import { Shipping } from "../shipping/shipping";
+import { Dashboard } from "../screens/admin/dashboard";
+import { Recipe } from "../screens/admin/recipe/recipe";
 
 // const bottomNav = () => {
 //   <NavigationContainer>
@@ -130,6 +132,8 @@ function AppNav() {
         <Stack.Screen name="profile" component={Profile} />
         <Stack.Screen name="about" component={AboutUs} />
         <Stack.Screen name="shipping" component={Shipping} />
+        <Stack.Screen name="dashboard" component={Dashboard} />
+        <Stack.Screen name="recipe" component={Recipe} />
       </Stack.Navigator>
     </NavigationContainer>
   );

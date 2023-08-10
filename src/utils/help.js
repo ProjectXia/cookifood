@@ -24,7 +24,7 @@ function showLoadingLottie() {
 function getARandomImageName() {
   const prefix = "img_";
   const randomNum = Math.random();
-  return prefix + randomNum;
+  return prefix + randomNum + ".jpg";
 }
 
 function getARandomIds() {
