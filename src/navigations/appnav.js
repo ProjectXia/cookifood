@@ -21,6 +21,10 @@ import { Order } from "../screens/order/order";
 import { Shipping } from "../shipping/shipping";
 import { Dashboard } from "../screens/admin/dashboard";
 import { Recipe } from "../screens/admin/recipe/recipe";
+import { Category } from "../screens/admin/category/category";
+import { Ingredients } from "../screens/admin/ingredient/ingredient";
+import { Orders } from "../screens/admin/orders/orders";
+import { Users } from "../screens/admin/users/user";
 
 // const bottomNav = () => {
 //   <NavigationContainer>
@@ -134,6 +138,10 @@ function AppNav() {
         <Stack.Screen name="shipping" component={Shipping} />
         <Stack.Screen name="dashboard" component={Dashboard} />
         <Stack.Screen name="recipe" component={Recipe} />
+        <Stack.Screen name="category" component={Category} />
+        <Stack.Screen name="ingredient" component={Ingredients} />
+        <Stack.Screen name="orders" component={Orders} />
+        <Stack.Screen name="users" component={Users} />
       </Stack.Navigator>
     </NavigationContainer>
   );

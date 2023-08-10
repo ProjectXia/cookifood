@@ -36,13 +36,23 @@ function Dashboard({ navigation }) {
           />
           <Text style={stylesdash.cardText}>Recipes</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={stylesdash.card} onPress={() => {}}>
+        <TouchableOpacity
+          style={stylesdash.card}
+          onPress={() => {
+            navigation.navigate("orders");
+          }}
+        >
           <Ionicons name="list-circle-outline" size={80} color={"gray"} />
           <Text style={stylesdash.cardText}>My Orders</Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity style={stylesdash.card} onPress={() => {}}>
+        <TouchableOpacity
+          style={stylesdash.card}
+          onPress={() => {
+            navigation.navigate("ingredient");
+          }}
+        >
           <Ionicons
             name="information-circle-outline"
             size={80}
@@ -50,13 +60,23 @@ function Dashboard({ navigation }) {
           />
           <Text style={stylesdash.cardText}>Ingredients</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={stylesdash.card} onPress={() => {}}>
+        <TouchableOpacity
+          style={stylesdash.card}
+          onPress={() => {
+            navigation.navigate("category");
+          }}
+        >
           <Ionicons name="list-circle" size={80} color={"gray"} />
           <Text style={stylesdash.cardText}>Category</Text>
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row" }}>
-        <TouchableOpacity style={stylesdash.card} onPress={() => {}}>
+        <TouchableOpacity
+          style={stylesdash.card}
+          onPress={() => {
+            navigation.navigate("users");
+          }}
+        >
           <Ionicons name="people-circle-outline" size={80} color={"gray"} />
           <Text style={stylesdash.cardText}>Users</Text>
         </TouchableOpacity>

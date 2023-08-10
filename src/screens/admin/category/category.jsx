@@ -9,91 +9,29 @@ import {
   ToastAndroid,
   KeyboardAvoidingView,
 } from "react-native";
-import { stylesrecipe } from "./recipeStyle";
+import { stylescat } from "./categoryStyle";
 import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import { InputBox } from "../../../components/input";
 import { BButton } from "../../../components/bbutton";
 import { CustomCamera } from "../../../components/customecamera";
-import LottieView from "lottie-react-native";
 import * as ImagePicker from "expo-image-picker";
 import SelectDropdown from "react-native-select-dropdown";
 import { firebase } from "../../../services/firebaseConfig";
-import { RecipeListCard } from "../../../components/recipelistItem";
 import { makeBlob } from "../../../services/uploadImage";
 import { getARandomIds, getARandomImageName } from "../../../utils/help";
+import { CategoryCard } from "../../../components/categorycard";
 
-function Recipe() {
+function Category() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isCameraShown, setIsCameraShown] = useState(false);
   const [imageFromCamera, setImageFromCamera] = useState("");
   const [imageFromPicker, setImageFromPicker] = useState("");
   const [showLoading, setShowLoading] = useState(false);
-  const [listName, setListName] = useState();
+  const [listName, setListName] = useState("");
   const [category, setCategory] = useState([]);
-  const [recipe, setRecipe] = useState([]);
-  const [cooktime, setCooktime] = useState();
-  const [price, setPrice] = useState();
-  const [ccatId, setCCatId] = useState("");
+  const [listDetail, setListDetail] = useState("");
 
-  const getRecipes = () => {
-    firebase
-      .firestore()
-      .collection("recipes")
-      .get()
-      .then((response) => {
-        setRecipe(response.docs);
-        // response.forEach((doc) => {
-        //   setCategory({ name: doc.data().name, id: doc.id });
-        // });
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-  const deleteRecipe = (imageName, recipeID) => {
-    setShowLoading(true);
-    firebase
-      .storage()
-      .ref("recipes/" + imageName)
-      .delete()
-      .then((res) => {
-        firebase
-          .firestore()
-          .collection("recipes")
-          .doc(recipeID)
-          .delete()
-          .then((res) => {
-            ToastAndroid.show("Recipe Deleted! ", ToastAndroid.LONG);
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-      })
-      .catch((err) => {
-        console.log(err.message);
-      });
-    setShowLoading(false);
-  };
-  const __renderRecipe = ({ item }) => {
-    const listing = item.data();
-    const listId = item.id;
-
-    return (
-      <View>
-        <RecipeListCard
-          key={listId}
-          title={listing.name}
-          imgurl={listing.imgUrl}
-          cookt={listing.cooktime}
-          price={listing.price}
-          deleteClick={() => {
-            deleteRecipe(listing.imageName, listId);
-          }}
-        />
-      </View>
-    );
-  };
   const getCategory = () => {
     firebase
       .firestore()
@@ -109,10 +47,50 @@ function Recipe() {
         console.log({ error });
       });
   };
+  const deleteCategory = (imageName, recipeID) => {
+    setShowLoading(true);
+    firebase
+      .storage()
+      .ref("category/" + imageName)
+      .delete()
+      .then((res) => {
+        firebase
+          .firestore()
+          .collection("category")
+          .doc(recipeID)
+          .delete()
+          .then((res) => {
+            ToastAndroid.show("Category Deleted! ", ToastAndroid.LONG);
+          })
+          .catch((err) => {
+            console.log(err.message);
+          });
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    setShowLoading(false);
+  };
+  const __renderCategory = ({ item }) => {
+    const listing = item.data();
+    const listId = item.id;
+
+    return (
+      <View>
+        <CategoryCard
+          title={listing.name}
+          imgurl={listing.imgUrl}
+          descrp={listing.detail}
+          deleteClick={() => {
+            deleteCategory(listing.imgName, listId);
+          }}
+        />
+      </View>
+    );
+  };
   const toggleModall = () => {
     setListName("");
-    setCooktime("");
-    setPrice("");
+    setListDetail("");
     setModalVisible(!isModalVisible);
   };
   const onImageCameFromGallery = (image) => {
@@ -141,17 +119,13 @@ function Recipe() {
     const docId = getARandomIds();
     firebase
       .firestore()
-      .collection("recipes")
+      .collection("category")
       .doc(docId)
       .set({
         name: listName,
-        cooktime: cooktime,
-        serving: 1,
-        price: price,
+        detail: listDetail,
         imgName: imgName,
         imgUrl: imageUrlOnServer,
-        uuid: "oZ2uGYH3avYxPxplyjZaCE3IqvK2",
-        catId: ccatId,
       })
       .then((response) => {
         ToastAndroid.show("Saved Recipe Successfully", ToastAndroid.SHORT);
@@ -169,7 +143,7 @@ function Recipe() {
     setShowLoading(true);
     makeBlob(imageUri)
       .then((imageBlob) => {
-        const userStorageRef = firebase.storage().ref("recipes/");
+        const userStorageRef = firebase.storage().ref("category/");
         const imageName = getARandomImageName();
         userStorageRef
           .child(imageName)
@@ -178,7 +152,7 @@ function Recipe() {
             // will fetch uploaded image url for us
             firebase
               .storage()
-              .ref("recipes/" + imageName)
+              .ref("category/" + imageName)
               .getDownloadURL()
               .then((downloadRes) => {
                 const imageUrlOnServer = downloadRes;
@@ -204,10 +178,10 @@ function Recipe() {
   };
   useEffect(() => {
     getCategory();
-    getRecipes();
   }, []);
+
   return (
-    <View style={stylesrecipe.mainview}>
+    <View style={stylescat.mainview}>
       <View
         style={{
           height: 55,
@@ -223,10 +197,10 @@ function Recipe() {
         }}
       >
         <Ionicons name="information-circle-outline" color={"gray"} size={38} />
-        <Text style={{ fontSize: 20 }}>Recipe</Text>
+        <Text style={{ fontSize: 20 }}>Category</Text>
         <TouchableOpacity
           style={{
-            marginLeft: 150,
+            marginLeft: 130,
             backgroundColor: "orange",
             paddingHorizontal: 10,
             paddingVertical: 5,
@@ -248,16 +222,16 @@ function Recipe() {
       </View>
       <View style={{ marginTop: 70 }}>
         <FlatList
-          data={recipe}
+          data={category}
           horizontal={false}
-          renderItem={__renderRecipe}
+          renderItem={__renderCategory}
           ListEmptyComponent={
             <Text style={{ color: "gray", fontSize: 16, fontWeight: "600" }}>
               No listing found !
             </Text>
           }
           refreshing={showLoading}
-          onRefresh={() => getRecipes()}
+          onRefresh={() => getCategory()}
         />
       </View>
       <KeyboardAvoidingView>
@@ -279,7 +253,7 @@ function Recipe() {
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: "400" }}>
-              Add New Recipe
+              Add New Category
             </Text>
             <InputBox
               placeholder={"Recipe Name"}
@@ -288,52 +262,15 @@ function Recipe() {
               onTextChange={setListName}
               value={listName}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                width: 150,
-                justifyContent: "center",
-              }}
-            >
-              <InputBox
-                placeholder={"Cooking Time"}
-                iconName={"list-circle-outline"}
-                showIcon={true}
-                onTextChange={setCooktime}
-                value={cooktime}
-                keyboard={"number-pad"}
-              />
-              <Text>{"  "} </Text>
-              <InputBox
-                placeholder={"Price"}
-                iconName={"list-circle-outline"}
-                showIcon={true}
-                onTextChange={setPrice}
-                value={price}
-                keyboard={"number-pad"}
-              />
-            </View>
 
-            <SelectDropdown
-              data={category}
-              defaultButtonText={" Select Category "}
-              onSelect={(selectedItem, index) => {
-                //console.log(selectedItem.data().name, selectedItem.id);
-                setCCatId(selectedItem.id);
-                console.log(ccatId);
-              }}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                // text represented after item is selected
-                // if data array is an array of objects then return selectedItem.property to render after item is selected
-
-                return selectedItem.data().name;
-              }}
-              rowTextForSelection={(item, index) => {
-                // text represented for each item in dropdown
-                // if data array is an array of objects then return item.property to represent item in dropdown
-                return item.data().name;
-              }}
+            <InputBox
+              placeholder={"Detail"}
+              iconName={"list-circle-outline"}
+              showIcon={true}
+              onTextChange={setListDetail}
+              value={listDetail}
             />
+
             <View
               style={{
                 flexDirection: "row",
@@ -439,18 +376,11 @@ function Recipe() {
           setImageFromCamera(response.uri);
         }}
       />
-      {showLoading && (
-        <LottieView
-          source={require("../../../../assets/animations/recipes-book.json")}
-          autoPlay
-          loop
-        />
-      )}
     </View>
   );
 }
 
-export { Recipe };
+export { Category };
 const styles = StyleSheet.create({
   pickImgCircle: {
     backgroundColor: "#F1F6F5",

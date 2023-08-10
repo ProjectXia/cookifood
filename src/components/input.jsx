@@ -14,6 +14,7 @@ function InputBox({
   value,
   iconSize = 20,
   keyboard,
+  multiline,
 }) {
   return (
     <View style={styles.inputStyle}>
@@ -25,6 +26,7 @@ function InputBox({
         onBlur={onBlur}
         value={value}
         keyboardType={keyboard}
+        multiline={multiline}
       />
       {showIcon === true ? (
         <Ionicons
