@@ -1,9 +1,50 @@
-import React from "react";
-import { View, Text } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, FlatList } from "react-native";
 import { stylesuser } from "./userStyle";
 import { Ionicons } from "@expo/vector-icons";
+import { firebase } from "../../../services/firebaseConfig";
+import { UserCard } from "../../../components/userCard";
 
 function Users() {
+  const [profiles, setProfiles] = useState("");
+  const [showLoading, setShowLoading] = useState(false);
+
+  const getAllProfile = async () => {
+    setShowLoading(true);
+    firebase
+      .firestore()
+      .collection("profiles")
+      .get()
+      .then((response) => {
+        setProfiles(response.docs);
+        setShowLoading(false);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
+  const __renderProfile = ({ item, index }) => {
+    const listing = item.data();
+    const listId = item.id;
+    let serial = index + 1;
+
+    return (
+      <View>
+        <UserCard
+          serialNo={serial}
+          name={listing.fullname}
+          email={listing.email}
+          address={listing.address}
+          created={listing.updatedat}
+        />
+      </View>
+    );
+  };
+
+  useEffect(() => {
+    getAllProfile();
+  }, []);
+
   return (
     <View style={stylesuser.mainview}>
       <View
@@ -23,13 +64,20 @@ function Users() {
         <Ionicons name="information-circle-outline" color={"gray"} size={38} />
         <Text style={{ fontSize: 20 }}>All Users</Text>
       </View>
-      <Text>
-        A mobile application that will facilitate the people to select a recipe
-        to cook in daily hectic routine. It is very hard to go out and choose
-        what to cook everyday particularly for professionals. This mobile
-        application will help people to select meal of the day that they want to
-        cook with all ingredients (spices, oil, vegetables, , meat, etc.)
-      </Text>
+      <View style={{ marginTop: 70 }}>
+        <FlatList
+          data={profiles}
+          horizontal={false}
+          renderItem={__renderProfile}
+          ListEmptyComponent={
+            <Text style={{ color: "gray", fontSize: 16, fontWeight: "600" }}>
+              No listing found !
+            </Text>
+          }
+          refreshing={showLoading}
+          onRefresh={() => getAllProfile()}
+        />
+      </View>
     </View>
   );
 }
