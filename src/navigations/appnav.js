@@ -25,6 +25,7 @@ import { Category } from "../screens/admin/category/category";
 import { Ingredients } from "../screens/admin/ingredient/ingredient";
 import { Orders } from "../screens/admin/orders/orders";
 import { Users } from "../screens/admin/users/user";
+import { AdminSetting } from "../screens/admin/asetting/asetting";
 
 // const bottomNav = () => {
 //   <NavigationContainer>
@@ -142,6 +143,7 @@ function AppNav() {
         <Stack.Screen name="ingredient" component={Ingredients} />
         <Stack.Screen name="orders" component={Orders} />
         <Stack.Screen name="users" component={Users} />
+        <Stack.Screen name="asetting" component={AdminSetting} />
       </Stack.Navigator>
     </NavigationContainer>
   );

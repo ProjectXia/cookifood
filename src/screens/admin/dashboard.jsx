@@ -13,7 +13,7 @@ function Dashboard({ navigation }) {
           backgroundColor: "#ABC270",
           borderRadius: 15,
           marginBottom: 5,
-          padding: 10,
+          paddingHorizontal: 10,
           alignItems: "center",
           flexDirection: "row",
           position: "absolute",
@@ -22,6 +22,27 @@ function Dashboard({ navigation }) {
       >
         <Ionicons name="settings-outline" size={30} color={"gray"} />
         <Text style={{ fontSize: 20 }}>Admin Dashboard</Text>
+        <TouchableOpacity
+          style={{
+            marginLeft: 60,
+            backgroundColor: "orange",
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderRadius: 10,
+          }}
+          onPress={() => {}}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Text>Logout </Text>
+            <Ionicons name="log-out-outline" color={"green"} size={38} />
+          </View>
+        </TouchableOpacity>
       </View>
       <Text>Recipes | Category | Ingredients | Order Status | logout</Text>
       <View style={{ flexDirection: "row" }}>
@@ -80,9 +101,14 @@ function Dashboard({ navigation }) {
           <Ionicons name="people-circle-outline" size={80} color={"gray"} />
           <Text style={stylesdash.cardText}>Users</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={stylesdash.card} onPress={() => {}}>
-          <Ionicons name="log-out-outline" size={80} color={"gray"} />
-          <Text style={stylesdash.cardText}>Logout</Text>
+        <TouchableOpacity
+          style={stylesdash.card}
+          onPress={() => {
+            navigation.navigate("asetting");
+          }}
+        >
+          <Ionicons name="md-settings-outline" size={80} color={"gray"} />
+          <Text style={stylesdash.cardText}>Setting</Text>
         </TouchableOpacity>
       </View>
     </View>

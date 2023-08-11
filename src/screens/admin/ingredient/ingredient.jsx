@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  StyleSheet,
-  Image,
   View,
   Text,
   TouchableOpacity,
@@ -14,73 +12,78 @@ import { Ionicons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import { InputBox } from "../../../components/input";
 import { BButton } from "../../../components/bbutton";
-import { CustomCamera } from "../../../components/customecamera";
-import * as ImagePicker from "expo-image-picker";
 import SelectDropdown from "react-native-select-dropdown";
 import { firebase } from "../../../services/firebaseConfig";
-import { makeBlob } from "../../../services/uploadImage";
-import { getARandomIds, getARandomImageName } from "../../../utils/help";
-import { CategoryCard } from "../../../components/categorycard";
+import { getARandomIds } from "../../../utils/help";
+import { IngredCard } from "../../../components/ingredcard";
 
 function Ingredients() {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [isCameraShown, setIsCameraShown] = useState(false);
-  const [imageFromCamera, setImageFromCamera] = useState("");
-  const [imageFromPicker, setImageFromPicker] = useState("");
   const [showLoading, setShowLoading] = useState(false);
   const [listName, setListName] = useState("");
+  const [listQuantity, setListQuantity] = useState();
+  const [recipeId, setRecipeId] = useState("");
+  const [recipes, setRecipes] = useState([]);
+  const [ingred, setIngred] = useState([]);
 
-  const getCategory = () => {
+  const getRecipes = () => {
     firebase
       .firestore()
-      .collection("category")
+      .collection("recipes")
       .get()
       .then((response) => {
-        setCategory(response.docs);
-        // response.forEach((doc) => {
-        //   setCategory({ name: doc.data().name, id: doc.id });
-        // });
+        setRecipes(response.docs);
       })
       .catch((error) => {
         console.log({ error });
       });
   };
-  const deleteCategory = (imageName, recipeID) => {
-    setShowLoading(true);
+
+  const getIngred = () => {
     firebase
-      .storage()
-      .ref("category/" + imageName)
+      .firestore()
+      .collection("ingrediants")
+      .get()
+      .then((response) => {
+        setIngred(response.docs);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
+  const deleteIngred = (ingreId) => {
+    setShowLoading(true);
+
+    firebase
+      .firestore()
+      .collection("ingrediants")
+      .doc(ingreId)
       .delete()
       .then((res) => {
-        firebase
-          .firestore()
-          .collection("category")
-          .doc(recipeID)
-          .delete()
-          .then((res) => {
-            ToastAndroid.show("Category Deleted! ", ToastAndroid.LONG);
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
+        ToastAndroid.show("Ingrediant Deleted! ", ToastAndroid.LONG);
       })
       .catch((err) => {
         console.log(err.message);
       });
     setShowLoading(false);
   };
-  const __renderCategory = ({ item }) => {
+  const __renderIngred = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
-
+    let matchRecipe;
+    recipes.forEach((rec) => {
+      if (listing.recipeId == rec.id) {
+        matchRecipe = rec.data().name;
+      }
+    });
     return (
       <View>
-        <CategoryCard
-          title={listing.name}
-          imgurl={listing.imgUrl}
-          descrp={listing.detail}
-          deleteClick={() => {
-            deleteCategory(listing.imgName, listId);
+        <IngredCard
+          IngredientName={listing.name}
+          IngredientMsr={listing.quantity}
+          Item={matchRecipe}
+          delClick={() => {
+            deleteIngred(listId);
           }}
         />
       </View>
@@ -88,42 +91,20 @@ function Ingredients() {
   };
   const toggleModall = () => {
     setListName("");
-    setListDetail("");
+    setListQuantity("");
     setModalVisible(!isModalVisible);
   };
-  const onImageCameFromGallery = (image) => {
-    setImageFromPicker(image.uri);
-  };
 
-  const pickImageFromGallery = () => {
-    ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    })
-      .then((response) => {
-        // when users opens the picker and just comes back and does not select the image
-        if (response.canceled) {
-          alert("not selected");
-        } else {
-          onImageCameFromGallery(response.assets[0]);
-        }
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
-  };
-  const saveListing = (imgName, imageUrlOnServer) => {
+  const saveListing = () => {
     const docId = getARandomIds();
     firebase
       .firestore()
-      .collection("category")
+      .collection("ingrediants")
       .doc(docId)
       .set({
         name: listName,
-        detail: listDetail,
-        imgName: imgName,
-        imgUrl: imageUrlOnServer,
+        quantity: listQuantity,
+        recipeId: recipeId,
       })
       .then((response) => {
         ToastAndroid.show("Saved Recipe Successfully", ToastAndroid.SHORT);
@@ -136,46 +117,9 @@ function Ingredients() {
       });
   };
 
-  const saveListingImage = () => {
-    const imageUri = imageFromCamera || imageFromPicker;
-    setShowLoading(true);
-    makeBlob(imageUri)
-      .then((imageBlob) => {
-        const userStorageRef = firebase.storage().ref("category/");
-        const imageName = getARandomImageName();
-        userStorageRef
-          .child(imageName)
-          .put(imageBlob)
-          .then((uploadResponse) => {
-            // will fetch uploaded image url for us
-            firebase
-              .storage()
-              .ref("category/" + imageName)
-              .getDownloadURL()
-              .then((downloadRes) => {
-                const imageUrlOnServer = downloadRes;
-
-                // passing the UID and url to add data to firestore function
-                saveListing(imageName, imageUrlOnServer);
-              })
-              .catch((downlaodErr) => {
-                console.log(downlaodErr.message);
-                setShowLoading(false);
-              });
-
-            // get the url from response and then add it with the data to firebase with uid
-          })
-          .catch((uploadError) => {
-            console.log(uploadError.message);
-            setShowLoading(false);
-          });
-      })
-      .catch((blobError) => {
-        setShowLoading(false);
-      });
-  };
   useEffect(() => {
-    getCategory();
+    getIngred();
+    getRecipes();
   }, []);
 
   return (
@@ -218,13 +162,93 @@ function Ingredients() {
           </View>
         </TouchableOpacity>
       </View>
-      <Text>
-        A mobile application that will facilitate the people to select a recipe
-        to cook in daily hectic routine. It is very hard to go out and choose
-        what to cook everyday particularly for professionals. This mobile
-        application will help people to select meal of the day that they want to
-        cook with all ingredients (spices, oil, vegetables, , meat, etc.)
-      </Text>
+      <View style={{ marginTop: 70 }}>
+        <FlatList
+          data={ingred}
+          horizontal={false}
+          renderItem={__renderIngred}
+          ListEmptyComponent={
+            <Text style={{ color: "gray", fontSize: 16, fontWeight: "600" }}>
+              No listing found !
+            </Text>
+          }
+          refreshing={showLoading}
+          onRefresh={() => getIngred()}
+        />
+      </View>
+
+      <KeyboardAvoidingView>
+        <Modal
+          animationIn={"slideInRight"}
+          animationOut={"slideOutDown"}
+          animationOutTiming={1500}
+          isVisible={isModalVisible}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "90%",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#F1F6F5",
+              borderRadius: 10,
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "400" }}>
+              Add New Category
+            </Text>
+            <InputBox
+              placeholder={"Recipe Name"}
+              iconName={"list-circle-outline"}
+              showIcon={true}
+              onTextChange={setListName}
+              value={listName}
+            />
+            <InputBox
+              placeholder={"Quantity of Ingrediant like 100g.. 2tbsp"}
+              iconName={"list-circle-outline"}
+              showIcon={true}
+              onTextChange={setListQuantity}
+              value={listQuantity}
+            />
+            <View style={{ width: "95%" }}>
+              <SelectDropdown
+                dropdownStyle={{ width: "80%", backgroundColor: "orange" }}
+                data={recipes}
+                defaultButtonText={" Select Recipe "}
+                onSelect={(selectedItem, index) => {
+                  //console.log(selectedItem.data().name, selectedItem.id);
+                  setRecipeId(selectedItem.id);
+                  console.log(recipeId);
+                }}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                  // text represented after item is selected
+                  // if data array is an array of objects then return selectedItem.property to render after item is selected
+
+                  return selectedItem.data().name;
+                }}
+                rowTextForSelection={(item, index) => {
+                  // text represented for each item in dropdown
+                  // if data array is an array of objects then return item.property to represent item in dropdown
+                  return item.data().name;
+                }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                width: "50%",
+                marginVertical: 30,
+                justifyContent: "space-around",
+              }}
+            >
+              <BButton title="Save" onPressChange={saveListing} />
+              <BButton title="Cancel" onPressChange={toggleModall} />
+            </View>
+          </View>
+        </Modal>
+      </KeyboardAvoidingView>
     </View>
   );
 }
