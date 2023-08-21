@@ -18,7 +18,7 @@ import { getARandomIds } from "../../utils/help";
 function RecipesDetail({ route, navigation }) {
   const { recipeID, bookm, rname, mint, serving, price, imgUrl } = route.params;
 
-  console.log("detail Recipe Id: " + recipeID);
+  // console.log("detail Recipe Id: " + recipeID);
 
   const [ingredient, setIngredient] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
@@ -76,6 +76,8 @@ function RecipesDetail({ route, navigation }) {
             .set({
               orderdate: new Date(),
               shipaddress: "",
+              items: 0,
+              totalAmount: 0,
               status: "Pending",
               usid: uuid,
             })
@@ -89,6 +91,10 @@ function RecipesDetail({ route, navigation }) {
               await Storage.setItem({
                 key: "order_id",
                 value: docId,
+              });
+              await Storage.setItem({
+                key: "order_status",
+                value: "Pending",
               });
               addListingOrders(docId, newPrice, serv, recipeID, rname);
             })
@@ -152,6 +158,8 @@ function RecipesDetail({ route, navigation }) {
               .set({
                 orderdate: new Date(),
                 shipaddress: "",
+                items: 0,
+                totalAmount: 0,
                 status: "Pending",
                 usid: uuid,
               })
@@ -163,6 +171,10 @@ function RecipesDetail({ route, navigation }) {
                 await Storage.setItem({
                   key: "order_id",
                   value: response.doc.id,
+                });
+                await Storage.setItem({
+                  key: "order_status",
+                  value: "Pending",
                 });
                 firebase
                   .firestore()

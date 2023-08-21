@@ -4,9 +4,35 @@ import { stylesshipping } from "./shippingStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "react-native-paper";
 import { InputBox } from "../components/input";
+import { firebase } from "../services/firebaseConfig";
+import { Storage } from "expo-storage";
 
-function Shipping({ navigation }) {
+function Shipping({ route, navigation }) {
+  const { oidd } = route.params;
   const [address, setAddress] = useState("");
+
+  const updateShipAddress = () => {
+    firebase
+      .firestore()
+      .collection("order")
+      .doc(oidd)
+      .update({ shipaddress: address, status: "In Process" })
+      .then((response) => {})
+      .catch((error) => {
+        console.log({ error });
+      });
+    updateStatusAndId();
+  };
+  const updateStatusAndId = async () => {
+    await Storage.setItem({
+      key: "order_status",
+      value: "",
+    });
+    await Storage.setItem({
+      key: "order_id",
+      value: "",
+    });
+  };
   return (
     <View style={stylesshipping.mainview}>
       <View
@@ -34,7 +60,13 @@ function Shipping({ navigation }) {
         iconName={"home"}
       />
       <Text>Payment Method (COD)</Text>
-      <Button mode="elevated" onPress={() => {}}>
+      <Button
+        mode="elevated"
+        onPress={() => {
+          updateShipAddress();
+          navigation.replace("Home");
+        }}
+      >
         Complete Order
       </Button>
     </View>

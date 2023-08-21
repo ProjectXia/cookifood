@@ -5,6 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { CartCard } from "../../components/cartcard";
 import { Button } from "react-native-paper";
 import { firebase } from "../../services/firebaseConfig";
+import { Storage } from "expo-storage";
 
 function ShoppingCart({ navigation }) {
   const [items, setItems] = useState(0);
@@ -13,29 +14,45 @@ function ShoppingCart({ navigation }) {
   const [orderlines, setOrderlines] = useState([]);
   const [count, setCount] = useState(0);
   const [mprice, setMprice] = useState(0);
+  const [orderID, setOrderID] = useState();
 
   let grandTotal = 0;
+  let st;
+  let oid;
+  const getStatusId = async () => {
+    st = await Storage.getItem({ key: "order_status" });
+    oid = await Storage.getItem({ key: "order_id" });
+    console.log(st);
+    console.log(oid);
+  };
 
   const getOrderListing = () => {
     setShowLoading(true);
-    firebase
-      .firestore()
-      .collection("orderlines")
-      .get()
-      .then((response) => {
-        setOrderlines(response.docs);
-        setItems(response.docs.length);
-        setShowLoading(false);
-      })
-      .catch((error) => {
-        console.log({ error });
-        setShowLoading(false);
-      });
+    if (st === "Pending") {
+      if (oid === orderID) {
+        firebase
+          .firestore()
+          .collection("orderlines")
+          .get()
+          .then((response) => {
+            setOrderlines(response.docs);
+            setItems(response.docs.length);
+            setShowLoading(false);
+          })
+          .catch((error) => {
+            console.log({ error });
+            setShowLoading(false);
+          });
+      }
+    }
+    setShowLoading(false);
   };
 
   const __renderOrderlines = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
+
+    setOrderID(listing.oid);
 
     grandTotal = grandTotal + listing.price;
     setTotal(grandTotal);
@@ -52,6 +69,7 @@ function ShoppingCart({ navigation }) {
   };
 
   useEffect(() => {
+    getStatusId();
     getOrderListing();
   }, []);
 
@@ -190,7 +208,11 @@ function ShoppingCart({ navigation }) {
         <Button
           mode="contained"
           onPress={() => {
-            navigation.navigate("shipping");
+            if (items == 0) {
+              alert("No item in cart !");
+            } else {
+              navigation.navigate("shipping", { oidd: orderID });
+            }
           }}
         >
           Checkout

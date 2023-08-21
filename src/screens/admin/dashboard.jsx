@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { stylesdash } from "./dashboardStyle";
 import { Ionicons } from "@expo/vector-icons";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList } from "react-native";
+import { View, Text, FlatList, TouchableOpacity } from "react-native";
 import { stylesorder } from "./orderStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../../services/firebaseConfig";
@@ -8,22 +8,36 @@ import { List } from "react-native-paper";
 
 function Order() {
   const [porder, setPOrder] = useState([]);
+  const [lineItems, setLineItems] = useState();
   const [showLoading, setShowLoading] = useState(false);
-
+  const [showList, setShowList] = useState(false);
+  let osid;
+  const getuserId = async () => {
+    osid = await Storage.getItem({ key: "user_uid" });
+    console.log(osid);
+  };
+  const getAllLineItems = (orId) => {
+    firebase
+      .firestore()
+      .collection("orderlines")
+      .where("oid", "==", orId)
+      .get()
+      .then((response) => {
+        setLineItems(response.docs);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
   const getAllOrder = () => {
     setShowLoading(true);
     firebase
       .firestore()
       .collection("order")
-      .where("status", "==", "Pending")
+      .where("usid", "==", osid)
       .get()
       .then((response) => {
         setPOrder(response.docs);
-        // response.ForEach((doc) => {
-        //   if (doc.data().usid == Storage.getItem("user_uid")) {
-        //     console.log("user pending order found");
-        //   }
-        // });
       })
       .catch((error) => {
         console.log({ error });
@@ -33,22 +47,57 @@ function Order() {
   const __renderOrder = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
-
+    // getAllLineItems(listId);
     // setCount();
     // setMprice(listing.price);
+    let name;
+    let quantity;
+    let price;
+    // lineItems.forEach((element) => {
+    //   name = element.title;
+    //   quantity = element.quantity;
+    //   price = element.price;
+    // });
     return (
-      <View style={{ width: 360 }}>
-        <List.AccordionGroup>
-          <List.Accordion title="Pending Order (Rs. 4610)" id="1">
-            <List.Item title="Item 1" />
-            <List.Item title="Item 2" />
-          </List.Accordion>
-        </List.AccordionGroup>
-      </View>
+      <TouchableOpacity
+        style={{
+          width: 360,
+          height: 50,
+          backgroundColor: "white",
+          // alignItems: "center",
+          justifyContent: "center",
+          paddingHorizontal: 5,
+          borderRadius: 10,
+        }}
+        onPress={() => {
+          if (showList) {
+            setShowList(false);
+          } else {
+            setShowList(true);
+          }
+        }}
+      >
+        <Text>
+          {listing.status +
+            "(" +
+            listing.items +
+            ") - Total Amount: " +
+            listing.totalAmount}
+        </Text>
+        <Ionicons
+          name={showList ? "eye-outline" : "eye-off-outline"}
+          size={25}
+          style={{
+            position: "absolute",
+            right: 5,
+          }}
+        />
+      </TouchableOpacity>
     );
   };
   useEffect(() => {
-    getAllOrder();
+    getuserId();
+    //   getAllOrder();
   }, []);
 
   return (
@@ -89,7 +138,7 @@ function Order() {
                   fontWeight: "600",
                 }}
               >
-                There are no order pending!
+                There are no order Refresh page!
               </Text>
             </View>
           }
