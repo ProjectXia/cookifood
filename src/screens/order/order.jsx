@@ -4,19 +4,24 @@ import { stylesorder } from "./orderStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../../services/firebaseConfig";
 import { Storage } from "expo-storage";
-import { List } from "react-native-paper";
+import Modal from "react-native-modal";
+import { BButton } from "../../components/bbutton";
 
 function Order() {
   const [porder, setPOrder] = useState([]);
   const [lineItems, setLineItems] = useState();
   const [showLoading, setShowLoading] = useState(false);
   const [showList, setShowList] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   let orderID;
   let osid;
   const getuserId = async () => {
     osid = await Storage.getItem({ key: "user_uid" });
     console.log(osid);
+  };
+  const toggleModall = () => {
+    setModalVisible(!isModalVisible);
   };
   const getAllLineItems = () => {
     console.log(orderID);
@@ -64,12 +69,7 @@ function Order() {
           borderRadius: 10,
         }}
         onPress={() => {
-          if (showList) {
-            setShowList(false);
-          } else {
-            getAllLineItems();
-            setShowList(true);
-          }
+          toggleModall();
         }}
       >
         <Text>
@@ -80,7 +80,7 @@ function Order() {
             listing.totalAmount}
         </Text>
         <Ionicons
-          name={showList ? "eye-outline" : "eye-off-outline"}
+          name={isModalVisible ? "eye-outline" : "eye-off-outline"}
           size={25}
           style={{
             position: "absolute",
@@ -166,33 +166,67 @@ function Order() {
           refreshing={showLoading}
           onRefresh={() => getAllOrder()}
         />
-        {showList && (
-          <FlatList
-            data={lineItems}
-            renderItem={__renderOrderItem}
-            horizontal={false}
-            ListEmptyComponent={
-              <View
-                style={{
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text
+        {/* {showList && (
+          
+        )} */}
+
+        <Modal
+          animationIn={"slideInRight"}
+          animationOut={"slideOutDown"}
+          animationOutTiming={1500}
+          isVisible={isModalVisible}
+        >
+          <View
+            style={{
+              width: "100%",
+              height: "50%",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#F1F6F5",
+              borderRadius: 10,
+              paddingHorizontal: 10,
+            }}
+          >
+            <Text style={{ fontSize: 18, fontWeight: "400", marginBottom: 20 }}>
+              Line Items
+            </Text>
+            <FlatList
+              data={lineItems}
+              renderItem={__renderOrderItem}
+              horizontal={false}
+              ListEmptyComponent={
+                <View
                   style={{
-                    color: "gray",
-                    fontSize: 16,
-                    fontWeight: "600",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
-                  There are no Item!
-                </Text>
-              </View>
-            }
-            refreshing={showLoading}
-            onRefresh={() => getAllLineItems()}
-          />
-        )}
+                  <Text
+                    style={{
+                      color: "gray",
+                      fontSize: 16,
+                      fontWeight: "600",
+                    }}
+                  >
+                    There are no Item!
+                  </Text>
+                </View>
+              }
+              refreshing={showLoading}
+              onRefresh={() => getAllLineItems()}
+            />
+
+            <View
+              style={{
+                flexDirection: "row",
+                width: "50%",
+                justifyContent: "space-around",
+              }}
+            >
+              <BButton title="Cancel" onPressChange={toggleModall} />
+            </View>
+          </View>
+        </Modal>
       </View>
     </View>
   );
