@@ -11,16 +11,19 @@ function Order() {
   const [lineItems, setLineItems] = useState();
   const [showLoading, setShowLoading] = useState(false);
   const [showList, setShowList] = useState(false);
+
+  let orderID;
   let osid;
   const getuserId = async () => {
     osid = await Storage.getItem({ key: "user_uid" });
     console.log(osid);
   };
-  const getAllLineItems = (orId) => {
+  const getAllLineItems = () => {
+    console.log(orderID);
     firebase
       .firestore()
       .collection("orderlines")
-      .where("oid", "==", orId)
+      .where("oid", "==", orderID)
       .get()
       .then((response) => {
         setLineItems(response.docs);
@@ -47,17 +50,8 @@ function Order() {
   const __renderOrder = ({ item }) => {
     const listing = item.data();
     const listId = item.id;
-    // getAllLineItems(listId);
-    // setCount();
-    // setMprice(listing.price);
-    let name;
-    let quantity;
-    let price;
-    // lineItems.forEach((element) => {
-    //   name = element.title;
-    //   quantity = element.quantity;
-    //   price = element.price;
-    // });
+    orderID = listId;
+
     return (
       <TouchableOpacity
         style={{
@@ -73,6 +67,7 @@ function Order() {
           if (showList) {
             setShowList(false);
           } else {
+            getAllLineItems();
             setShowList(true);
           }
         }}
@@ -93,6 +88,32 @@ function Order() {
           }}
         />
       </TouchableOpacity>
+    );
+  };
+  const __renderOrderItem = ({ item }) => {
+    const listing = item.data();
+    const listId = item.id;
+
+    return (
+      <View
+        style={{
+          width: 355,
+          height: 30,
+          backgroundColor: "white",
+          // alignItems: "center",
+          justifyContent: "center",
+          paddingHorizontal: 2,
+          borderRadius: 10,
+        }}
+      >
+        <Text>
+          {listing.title +
+            "(qty: " +
+            listing.quantity +
+            ") -Amount: " +
+            listing.price}
+        </Text>
+      </View>
     );
   };
   useEffect(() => {
@@ -145,6 +166,33 @@ function Order() {
           refreshing={showLoading}
           onRefresh={() => getAllOrder()}
         />
+        {showList && (
+          <FlatList
+            data={lineItems}
+            renderItem={__renderOrderItem}
+            horizontal={false}
+            ListEmptyComponent={
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    color: "gray",
+                    fontSize: 16,
+                    fontWeight: "600",
+                  }}
+                >
+                  There are no Item!
+                </Text>
+              </View>
+            }
+            refreshing={showLoading}
+            onRefresh={() => getAllLineItems()}
+          />
+        )}
       </View>
     </View>
   );
