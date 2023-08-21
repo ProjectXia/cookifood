@@ -6,12 +6,14 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  ToastAndroid,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { IngredientCard } from "../../components/ingredient";
 import { Storage } from "expo-storage";
 import { Button } from "react-native-paper";
 import { firebase } from "../../services/firebaseConfig";
+import { getARandomIds } from "../../utils/help";
 
 function RecipesDetail({ route, navigation }) {
   const { recipeID, bookm, rname, mint, serving, price, imgUrl } = route.params;
@@ -22,7 +24,9 @@ function RecipesDetail({ route, navigation }) {
   const [showLoading, setShowLoading] = useState(false);
   const [count, setCount] = useState();
   const [serv, setServ] = useState();
+  const [newPrice, setNewPrice] = useState();
   const [cartText, setCartText] = useState("Add to Cart");
+  const [orderId, setOrderId] = useState();
 
   const getIngrediants = () => {
     firebase
@@ -53,9 +57,218 @@ function RecipesDetail({ route, navigation }) {
       </View>
     );
   };
+
+  ///////////////////////////////////////////////////////////////
+  const checkifOrdercreated = (uuid) => {
+    const docId = getARandomIds();
+    firebase
+      .firestore()
+      .collection("order")
+      .where("usid", "==", uuid)
+      .get()
+      .then((response) => {
+        if (response.empty) {
+          // alert("nott found");
+          firebase
+            .firestore()
+            .collection("order")
+            .doc(docId)
+            .set({
+              orderdate: new Date(),
+              shipaddress: "",
+              status: "Pending",
+              usid: uuid,
+            })
+            .then(async (response) => {
+              ToastAndroid.show(
+                "Order Created Successfully",
+                ToastAndroid.SHORT
+              );
+              // console.log(response.doc.id);
+              setOrderId(docId);
+              await Storage.setItem({
+                key: "order_id",
+                value: docId,
+              });
+              addListingOrders(docId, newPrice, serv, recipeID, rname);
+            })
+            .catch((error) => {
+              console.log("error: " + error);
+            });
+        }
+        response.forEach((doc) => {
+          if (doc.data().status === "Pending") {
+            ///////////////////////////// Pending Orders///////////////////
+            //alert("already order pending -" + doc.id);
+            // checkifListingOrderAlreadyExist(doc.id);
+            firebase
+              .firestore()
+              .collection("orderlines")
+              .where("oid", "==", orderId)
+              .get()
+              .then((response) => {
+                if (response.empty) {
+                  addListingOrders(orderId, newPrice, serv, recipeID, rname);
+                }
+                response.forEach((doc1) => {
+                  if (doc1.data().recipeId === recipeID) {
+                    // alert("Already Added to Cart");
+                  } else {
+                    const docId = getARandomIds();
+                    firebase
+                      .firestore()
+                      .collection("orderlines")
+                      .doc(docId)
+                      .set({
+                        oid: orderId,
+                        price: newPrice,
+                        quantity: serv,
+                        recipeId: recipeID,
+                        title: rname,
+                      })
+                      .then((response) => {
+                        ToastAndroid.show(
+                          "Orderlist added Successfully",
+                          ToastAndroid.SHORT
+                        );
+                      })
+                      .catch((error) => {
+                        console.log("error: " + error);
+                      });
+                  }
+                });
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+            //////////////////////////////////////////////////////////////
+          } else {
+            ///////////////////////NO Pending Order///////////////////////
+            // alert("no pending order");
+            firebase
+              .firestore()
+              .collection("order")
+              .doc(docId)
+              .set({
+                orderdate: new Date(),
+                shipaddress: "",
+                status: "Pending",
+                usid: uuid,
+              })
+              .then(async (response) => {
+                ToastAndroid.show(
+                  "Order Created Successfully",
+                  ToastAndroid.SHORT
+                );
+                await Storage.setItem({
+                  key: "order_id",
+                  value: response.doc.id,
+                });
+                firebase
+                  .firestore()
+                  .collection("orderlines")
+                  .where("oid", "==", orderId)
+                  .get()
+                  .then((response) => {
+                    if (response.empty) {
+                      addListingOrders(
+                        orderId,
+                        newPrice,
+                        serv,
+                        recipeID,
+                        rname
+                      );
+                    }
+                    response.forEach((doc1) => {
+                      if (doc1.data().recipeId === recipeID) {
+                        //  alert("Already Added to Cart");
+                      } else {
+                        const docId = getARandomIds();
+                        firebase
+                          .firestore()
+                          .collection("orderlines")
+                          .doc(docId)
+                          .set({
+                            oid: orderId,
+                            price: newPrice,
+                            quantity: serv,
+                            recipeId: recipeID,
+                            title: rname,
+                          })
+                          .then((response) => {
+                            ToastAndroid.show(
+                              "Orderlist added Successfully",
+                              ToastAndroid.SHORT
+                            );
+                          })
+                          .catch((error) => {
+                            console.log("error: " + error);
+                          });
+                      }
+                    });
+                  })
+                  .catch((error) => {
+                    console.log(error);
+                  });
+              })
+              .catch((error) => {
+                console.log("error: " + error);
+              });
+            //////////////////////created order//////////////
+          }
+        });
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+  };
+
+  const addListingOrders = (oID, p, q, rID, rName) => {
+    const docId = getARandomIds();
+    firebase
+      .firestore()
+      .collection("orderlines")
+      .doc(docId)
+      .set({
+        oid: oID,
+        price: p,
+        quantity: q,
+        recipeId: rID,
+        title: rName,
+      })
+      .then((response) => {
+        ToastAndroid.show("Orderlist added Successfully", ToastAndroid.SHORT);
+      })
+      .catch((error) => {
+        console.log("error: " + error);
+      });
+  };
+  const checkifListingOrderAlreadyExist = (oID) => {
+    firebase
+      .firestore()
+      .collection("orderlines")
+      .where("oid", "==", oID)
+      .get()
+      .then((response) => {
+        if (response.empty) {
+          addListingOrders(oID, newPrice, serv, recipeID, rname);
+        }
+        response.forEach((doc) => {
+          if (doc.data.recipeId === recipeID) {
+            alert("Already Added to Cart");
+          }
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  ///////////////////////////////////////////////////////////////
+
   useEffect(() => {
     getIngrediants();
     setServ(serving);
+    setNewPrice(price);
     setCartText("Add to Cart");
   }, []);
 
@@ -164,7 +377,7 @@ function RecipesDetail({ route, navigation }) {
               paddingHorizontal: 20,
             }}
           >
-            Rs.{price}
+            Rs.{newPrice}
           </Text>
         </View>
         {/* </View> */}
@@ -199,6 +412,8 @@ function RecipesDetail({ route, navigation }) {
                 if (serv >= 2) {
                   let newServing = serv - 1;
                   setServ(newServing);
+                  let nprice = price * newServing;
+                  setNewPrice(nprice);
                   if (newServing < 10) {
                     setCartText("Add to Cart");
                   }
@@ -213,6 +428,8 @@ function RecipesDetail({ route, navigation }) {
               onPress={() => {
                 let newServing = serv + 1;
                 setServ(newServing);
+                let nprice = newServing * price;
+                setNewPrice(nprice);
                 if (serv >= 9) {
                   setCartText("Special Order");
                 } else {
@@ -236,8 +453,15 @@ function RecipesDetail({ route, navigation }) {
           }}
         >
           <TouchableOpacity
-            onPress={() => {
-              alert("Recipe added successfully!");
+            onPress={async () => {
+              // alert(
+              //   "Recipe added successfully!" +
+              //     (await Storage.getItem({ key: "user_uid" })) +
+              //     " = " +
+              //     serv
+              // );
+              setOrderId(await Storage.getItem({ key: "order_id" }));
+              checkifOrdercreated(await Storage.getItem({ key: "user_uid" }));
             }}
           >
             <Button mode="contained">{cartText}</Button>

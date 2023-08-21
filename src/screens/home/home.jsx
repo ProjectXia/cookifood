@@ -13,9 +13,9 @@ import { RecipeCard } from "../../components/recipecard";
 import { RecipeCard2 } from "../../components/recipecard2";
 import { stylehome } from "./homeStyle";
 import { firebase } from "../../services/firebaseConfig";
+import { Ionicons } from "@expo/vector-icons";
 import {
   clearUserSession,
-  storeRecipeId,
   getUserLoggedInStatus,
 } from "../../services/storageService";
 import LottieView from "lottie-react-native";
@@ -24,7 +24,7 @@ import { Storage } from "expo-storage";
 function Home({ navigation }) {
   // const { user, userId } = route.params;
 
-  const [userName, setUserName] = useState("");
+  const [userName, setUserName] = useState();
   const [trandingRecipe, setTrandingRecipe] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
   const [category, setCategory] = useState([]);
@@ -188,6 +188,33 @@ function Home({ navigation }) {
           <Text style={stylehome.heading}>Hello {userName},</Text>
           <Text style={stylehome.subheading}>What you want to cook today?</Text>
         </View>
+        {userName === "Administrator" ? (
+          <TouchableOpacity
+            style={{
+              marginLeft: 20,
+              backgroundColor: "orange",
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              borderRadius: 10,
+            }}
+            onPress={() => {
+              navigation.navigate("dashboard");
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>Admin Panel</Text>
+              <Ionicons name="home-outline" color={"green"} size={38} />
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
       </View>
       <View
         style={{

@@ -14,11 +14,11 @@ function Welcome({ navigation }) {
       getUserLoggedInStatus()
         .then((response) => {
           if (response === "true") {
-            // navigation.navigate("Home");
-            navigation.navigate("dashboard");
+            navigation.navigate("Home");
+            // navigation.navigate("dashboard");
           } else {
-            // navigation.navigate("Signin");
-            navigation.navigate("dashboard");
+            navigation.navigate("Signin");
+            // navigation.navigate("dashboard");
           }
         })
         .catch((error) => {
