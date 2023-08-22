@@ -22,6 +22,9 @@ function Order() {
   };
   const toggleModall = () => {
     setModalVisible(!isModalVisible);
+    if (isModalVisible) {
+      getAllLineItems();
+    }
   };
   const getAllLineItems = () => {
     console.log(orderID);
@@ -77,7 +80,9 @@ function Order() {
             "(" +
             listing.items +
             ") - Total Amount: " +
-            listing.totalAmount}
+            listing.totalAmount +
+            "\n" +
+            listing.orderdate.toDate().toDateString()}
         </Text>
         <Ionicons
           name={isModalVisible ? "eye-outline" : "eye-off-outline"}
