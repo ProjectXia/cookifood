@@ -23,13 +23,7 @@ function Orders() {
         <Ionicons name="information-circle-outline" color={"gray"} size={38} />
         <Text style={{ fontSize: 20 }}>Orders</Text>
       </View>
-      <Text>
-        A mobile application that will facilitate the people to select a recipe
-        to cook in daily hectic routine. It is very hard to go out and choose
-        what to cook everyday particularly for professionals. This mobile
-        application will help people to select meal of the day that they want to
-        cook with all ingredients (spices, oil, vegetables, , meat, etc.)
-      </Text>
+      <Text>Order</Text>
     </View>
   );
 }

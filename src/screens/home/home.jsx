@@ -25,21 +25,27 @@ function Home({ navigation }) {
   // const { user, userId } = route.params;
 
   const [userName, setUserName] = useState();
+  const [userId, setUserId] = useState();
   const [trandingRecipe, setTrandingRecipe] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
   const [category, setCategory] = useState([]);
   const [bookmark, setBookmark] = useState([]);
   const [isbookM, setIsBookM] = useState(false);
 
-  const u = getCurrentProfile;
-
+  let user_id;
+  let user_name = "";
   const getCurrentProfile = async () => {
     //console.log(getUserId.toString());
     if (!getUserLoggedInStatus()) {
       clearUserSession("", "false");
       navigation.replace("Signin");
     }
-    setUserName(await Storage.getItem({ key: "user_name" }));
+    user_name = await Storage.getItem({ key: "user_name" });
+    user_id = await Storage.getItem({ key: "user_uid" });
+    setUserName(user_name);
+    setUserId(user_id);
+    console.log(userName);
+    console.log(user_id);
   };
 
   const getTrandingRecipe = () => {
@@ -57,6 +63,7 @@ function Home({ navigation }) {
         console.log({ error });
         setShowLoading(false);
       });
+    getCurrentProfile();
   };
 
   const getCategory = () => {
@@ -75,8 +82,14 @@ function Home({ navigation }) {
     firebase
       .firestore()
       .collection("bookmark")
+      // .where("uuid", "==", user_id)
       .get()
       .then((response) => {
+        // if (response.empty) {
+        //   setIsBookM(false);
+        // } else {
+        //   setIsBookM(true);
+        // }
         setBookmark(response.docs);
       })
       .catch((error) => {
@@ -178,7 +191,7 @@ function Home({ navigation }) {
     getTrandingRecipe();
     getCategory();
     getBookmark();
-  }, []);
+  }, [userName]);
 
   return (
     // <ScrollView>

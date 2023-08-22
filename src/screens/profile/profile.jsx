@@ -45,7 +45,7 @@ function Profile({ navigation }) {
       .firestore()
       .collection("profiles")
       .doc(profileId)
-      .update({ fullname: name, address: address })
+      .update({ address: address })
       .then((response) => {
         getCurrentProfile();
         ToastAndroid.show("Profile updated successfully!", ToastAndroid.LONG);

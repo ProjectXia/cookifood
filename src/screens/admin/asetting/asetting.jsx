@@ -8,7 +8,7 @@ import { firebase } from "../../../services/firebaseConfig";
 import { Storage } from "expo-storage";
 
 function AdminSetting() {
-  const [name, setName] = useState("");
+  const [name, setName] = useState("Administrator");
   const [address, setAddress] = useState("");
   const [currentPass, setCurrentPass] = useState("");
   const [newPass, setNewPass] = useState("");
@@ -45,7 +45,7 @@ function AdminSetting() {
       .firestore()
       .collection("profiles")
       .doc(profileId)
-      .update({ fullname: name, address: address })
+      .update({ address: address })
       .then((response) => {
         getCurrentProfile();
         ToastAndroid.show("Profile updated successfully!", ToastAndroid.LONG);
