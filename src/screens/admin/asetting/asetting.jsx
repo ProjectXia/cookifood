@@ -45,7 +45,7 @@ function AdminSetting() {
       .firestore()
       .collection("profiles")
       .doc(profileId)
-      .update({ address: address })
+      .update({ fullname: name, address: address })
       .then((response) => {
         getCurrentProfile();
         ToastAndroid.show("Profile updated successfully!", ToastAndroid.LONG);

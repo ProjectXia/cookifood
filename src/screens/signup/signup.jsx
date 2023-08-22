@@ -52,6 +52,7 @@ function SignUP({ navigation }) {
       .set({
         fullname: name,
         address: "",
+        role: "user",
         createdat: new Date(),
         uuid: userID,
       })

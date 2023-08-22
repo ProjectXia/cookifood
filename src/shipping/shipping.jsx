@@ -8,7 +8,7 @@ import { firebase } from "../services/firebaseConfig";
 import { Storage } from "expo-storage";
 
 function Shipping({ route, navigation }) {
-  const { oidd } = route.params;
+  const { oidd, count, gtotal } = route.params;
   const [address, setAddress] = useState("");
 
   const updateShipAddress = () => {
@@ -16,7 +16,12 @@ function Shipping({ route, navigation }) {
       .firestore()
       .collection("order")
       .doc(oidd)
-      .update({ shipaddress: address, status: "In Process" })
+      .update({
+        shipaddress: address,
+        status: "In Process",
+        items: count,
+        totalAmount: gtotal,
+      })
       .then((response) => {})
       .catch((error) => {
         console.log({ error });

@@ -1,9 +1,32 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { View, Text } from "react-native";
 import { stylesorders } from "./ordersStyle";
 import { Ionicons } from "@expo/vector-icons";
+import { firebase } from "../../../services/firebaseConfig";
+import { Storage } from "expo-storage";
+import Modal from "react-native-modal";
+import { BButton } from "../../../components/bbutton";
 
-function Orders() {
+function Orders({ navigation }) {
+  const [order, setOrder] = useState([]);
+  const [lineItems, setLineItems] = useState();
+  const [showLoading, setShowLoading] = useState(false);
+
+  const getAllOrder = () => {
+    setShowLoading(true);
+    firebase
+      .firestore()
+      .collection("order")
+      .get()
+      .then((response) => {
+        setOrder(response.docs);
+      })
+      .catch((error) => {
+        console.log({ error });
+      });
+    setShowLoading(false);
+  };
+
   return (
     <View style={stylesorders.mainview}>
       <View

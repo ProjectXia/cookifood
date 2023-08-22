@@ -211,7 +211,11 @@ function ShoppingCart({ navigation }) {
             if (items == 0) {
               alert("No item in cart !");
             } else {
-              navigation.navigate("shipping", { oidd: orderID });
+              navigation.navigate("shipping", {
+                oidd: orderID,
+                count: items,
+                gtotal: total,
+              });
             }
           }}
         >

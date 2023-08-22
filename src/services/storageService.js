@@ -1,6 +1,6 @@
 import { Storage } from "expo-storage";
 
-async function storeUserSession(uid, sessionState, uemail, uname) {
+async function storeUserSession(uid, sessionState, uemail, uname, role) {
   try {
     await Storage.setItem({ key: "user_uid", value: uid });
     await Storage.setItem({
@@ -8,6 +8,7 @@ async function storeUserSession(uid, sessionState, uemail, uname) {
       value: sessionState,
     });
     await Storage.setItem({ key: "user_name", value: uname });
+    await Storage.setItem({ key: "user_role", value: role });
     await Storage.setItem({ key: "user_email", value: uemail });
   } catch (error) {
     console.log(error.message);

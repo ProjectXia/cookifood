@@ -26,6 +26,7 @@ function Home({ navigation }) {
 
   const [userName, setUserName] = useState();
   const [userId, setUserId] = useState();
+  const [userRole, setUserRole] = useState();
   const [trandingRecipe, setTrandingRecipe] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
   const [category, setCategory] = useState([]);
@@ -34,6 +35,7 @@ function Home({ navigation }) {
 
   let user_id;
   let user_name = "";
+  let user_role = "";
   const getCurrentProfile = async () => {
     //console.log(getUserId.toString());
     if (!getUserLoggedInStatus()) {
@@ -42,9 +44,11 @@ function Home({ navigation }) {
     }
     user_name = await Storage.getItem({ key: "user_name" });
     user_id = await Storage.getItem({ key: "user_uid" });
+    user_role = await Storage.getItem({ key: "user_role" });
     setUserName(user_name);
     setUserId(user_id);
-    console.log(userName);
+    setUserRole(user_role);
+    console.log(user_role);
     console.log(user_id);
   };
 
@@ -201,7 +205,7 @@ function Home({ navigation }) {
           <Text style={stylehome.heading}>Hello {userName},</Text>
           <Text style={stylehome.subheading}>What you want to cook today?</Text>
         </View>
-        {userName === "Administrator" ? (
+        {userRole === "Administrator" ? (
           <TouchableOpacity
             style={{
               marginLeft: 20,

@@ -64,7 +64,8 @@ function SignIN({ navigation }) {
                 String(doc.data().uuid),
                 "true",
                 email,
-                String(doc.data().fullname)
+                String(doc.data().fullname),
+                String(doc.data().role)
               );
               navigation.replace("Home");
               // }
