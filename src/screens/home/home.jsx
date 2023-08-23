@@ -7,8 +7,8 @@ import {
   ScrollView,
   FlatList,
   Button,
+  ToastAndroid,
 } from "react-native";
-import { InputBox } from "../../components/input";
 import { RecipeCard } from "../../components/recipecard";
 import { RecipeCard2 } from "../../components/recipecard2";
 import { stylehome } from "./homeStyle";
@@ -20,10 +20,10 @@ import {
 } from "../../services/storageService";
 import LottieView from "lottie-react-native";
 import { Storage } from "expo-storage";
+import { getARandomIds } from "../../utils/help";
 
 function Home({ navigation }) {
   // const { user, userId } = route.params;
-
   const [userName, setUserName] = useState();
   const [userId, setUserId] = useState();
   const [userRole, setUserRole] = useState();
@@ -51,7 +51,6 @@ function Home({ navigation }) {
     console.log(user_role);
     console.log(user_id);
   };
-
   const getTrandingRecipe = () => {
     setShowLoading(true);
     firebase
@@ -61,6 +60,7 @@ function Home({ navigation }) {
       .get()
       .then((response) => {
         setTrandingRecipe(response.docs);
+        getBookmark();
         setShowLoading(false);
       })
       .catch((error) => {
@@ -69,7 +69,6 @@ function Home({ navigation }) {
       });
     getCurrentProfile();
   };
-
   const getCategory = () => {
     firebase
       .firestore()
@@ -86,33 +85,52 @@ function Home({ navigation }) {
     firebase
       .firestore()
       .collection("bookmark")
-      // .where("uuid", "==", user_id)
       .get()
       .then((response) => {
-        // if (response.empty) {
-        //   setIsBookM(false);
-        // } else {
-        //   setIsBookM(true);
-        // }
         setBookmark(response.docs);
       })
       .catch((error) => {
         console.log({ error });
       });
   };
-  const updateBookmark = (bId, updateB) => {
+  const createBookmark = (recId) => {
+    // setShowLoading(true);
+    const docId = getARandomIds();
+    console.log("create:" + docId);
+    firebase
+      .firestore()
+      .collection("bookmark")
+      .doc(docId)
+      .set({
+        isbookmark: true,
+        recipeId: recId,
+        uuid: userId,
+      })
+      .then((response) => {
+        ToastAndroid.show("Bookmarked Successfully", ToastAndroid.SHORT);
+        // setShowLoading(false);
+        getBookmark();
+      })
+      .catch((error) => {
+        console.log("error: " + error);
+        // setShowLoading(false);
+      });
+    // setShowLoading(false);
+  };
+  const deleteBookmark = (bId) => {
     setShowLoading(true);
     firebase
       .firestore()
       .collection("bookmark")
       .doc(bId)
-      .update({ isbookmark: updateB })
-      .then((response) => {
+      .delete()
+      .then((res) => {
         getBookmark();
       })
-      .catch((error) => {
-        console.log({ error });
+      .catch((err) => {
+        console.log(err.message);
       });
+
     setShowLoading(false);
   };
   const __renderCategory = ({ item }) => {
@@ -146,7 +164,7 @@ function Home({ navigation }) {
     let bookId;
     let recId;
     bookmark.forEach((doc) => {
-      if (doc.data().recipeId == listId) {
+      if (doc.data().recipeId == listId && doc.data().uuid == userId) {
         bookmarkis = doc.data().isbookmark;
         bookId = doc.id;
         recId = doc.data().recipeId;
@@ -165,11 +183,11 @@ function Home({ navigation }) {
           category={catname}
           iconName={bookmarkis === true ? "bookmark" : "bookmark-outline"}
           iconClick={() => {
-            // console.log("Bookm ID: " + bookId);
             if (bookmarkis === true) {
-              updateBookmark(bookId, false);
-            } else if (bookmarkis === false) {
-              updateBookmark(bookId, true);
+              console.log(bookId);
+              deleteBookmark(bookId);
+            } else {
+              createBookmark(listId);
             }
           }}
           titleClick={() => {

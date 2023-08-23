@@ -4,11 +4,19 @@ import { stylesbook } from "./bookmarkStyle";
 import { Ionicons } from "@expo/vector-icons";
 import { firebase } from "../../services/firebaseConfig";
 import { BookMarkCard } from "../../components/bookmarkcard";
+import { Storage } from "expo-storage";
 
 function Bookmark({ navigation }) {
   const [searchRecipe, setSearchRecipe] = useState("");
   const [bookmark, setBookmark] = useState([]);
   const [showLoading, setShowLoading] = useState(false);
+  const [userId, setUserId] = useState();
+
+  let user_id;
+  const getUserId = async () => {
+    user_id = await Storage.getItem({ key: "user_uid" });
+    setUserId(user_id);
+  };
 
   const getRecipe = () => {
     setShowLoading(true);
@@ -36,6 +44,21 @@ function Bookmark({ navigation }) {
         console.log({ error });
       });
   };
+  const deleteBookmark = (bId) => {
+    setShowLoading(true);
+    firebase
+      .firestore()
+      .collection("bookmark")
+      .doc(bId)
+      .delete()
+      .then((res) => {
+        getBookmark();
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+    setShowLoading(false);
+  };
   const updateBookmark = (bId, updateB) => {
     setShowLoading(true);
     firebase
@@ -58,7 +81,7 @@ function Bookmark({ navigation }) {
     let bookmarkis;
     let bookId;
     bookmark.forEach((doc) => {
-      if (doc.data().recipeId == listId) {
+      if (doc.data().recipeId == listId && doc.data().uuid == userId) {
         bookmarkis = doc.data().isbookmark;
         bookId = doc.id;
       }
@@ -72,7 +95,7 @@ function Bookmark({ navigation }) {
           img={listing.imgUrl}
           iconName={"bookmark"}
           iconClick={() => {
-            updateBookmark(bookId, false);
+            deleteBookmark(bookId);
           }}
           imgClick={() => {
             navigation.navigate("detail", {
@@ -90,9 +113,10 @@ function Bookmark({ navigation }) {
     }
   };
   useEffect(() => {
+    getUserId();
     getRecipe();
     getBookmark();
-  }, [bookmark]);
+  }, [bookmark, userId]);
 
   return (
     <View style={stylesbook.mainview}>

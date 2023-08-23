@@ -1,56 +1,16 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { View, Text, ImageBackground, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { firebase } from "../services/firebaseConfig";
 
-function SearchCard({ title, mint, serving, img, recipeId, bookId, imgClick }) {
-  const [bookmark, setBookmark] = useState(false);
-  const [bookmarkId, setBookmarkId] = useState("");
-  const [bookmarkupdate, setBookmarkupdate] = useState(false);
-
-  const getBookmark = () => {
-    firebase
-      .firestore()
-      .collection("bookmark")
-      .where("recipeId", "==", recipeId)
-      .get()
-      .then((response) => {
-        //setMybookmarkId(response.docs);
-        response.forEach((doc) => {
-          setBookmark(doc.data().isbookmark);
-          setBookmarkId(doc.id);
-        });
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-
-  const toggleBookmark = () => {
-    if (bookmark == true) {
-      setBookmark(false);
-    } else if (bookmark == false) {
-      setBookmark(true);
-    }
-  };
-  const updateBookmark = () => {
-    firebase
-      .firestore()
-      .collection("bookmark")
-      .doc(bookId)
-      .update({ isbookmark: bookmarkupdate })
-      .then((response) => {
-        getBookmark();
-      })
-      .catch((error) => {
-        console.log({ error });
-      });
-  };
-
-  useEffect(() => {
-    getBookmark();
-  }, []);
-
+function SearchCard({
+  title,
+  mint,
+  serving,
+  img,
+  imgClick,
+  iconName,
+  iconPress,
+}) {
   return (
     <View
       style={{
@@ -122,33 +82,12 @@ function SearchCard({ title, mint, serving, img, recipeId, bookId, imgClick }) {
               elevation: 2,
             }}
           >
-            {bookmark == true ? (
-              <Ionicons
-                name="bookmark"
-                size={30}
-                color={"red"}
-                onPress={() => {
-                  console.log("bookmark = " + bookmark);
-                  setBookmarkupdate(false);
-                  toggleBookmark();
-                  updateBookmark();
-                  // console.log("False bookmark = " + bookmark);
-                }}
-              />
-            ) : (
-              <Ionicons
-                name="bookmark-outline"
-                size={30}
-                color={"red"}
-                onPress={() => {
-                  console.log("bookmark = " + bookmark);
-                  setBookmarkupdate(true);
-                  toggleBookmark();
-                  updateBookmark();
-                  // console.log("True bookmark = " + bookmark);
-                }}
-              />
-            )}
+            <Ionicons
+              name={iconName}
+              size={30}
+              color={"red"}
+              onPress={iconPress}
+            />
           </View>
           {/* <View
             style={{
